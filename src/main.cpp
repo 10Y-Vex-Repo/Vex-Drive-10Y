@@ -174,11 +174,20 @@ void opcontrol() {
     // controller
     // loop to continuously update motors
     while (true) {
+        // tank drive code
         // get joystick positions
+        //int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        //int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+        
+        // move the chassis with curvature drive (TANK DRIVE - commented out)
+        // chassis.tank(leftY, rightY);
+
+        // arcade drive code
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-        // move the chassis with curvature drive
-        chassis.tank(leftY, rightY);
+        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+
+        chassis.arcade(leftY, rightX);
+
         // delay to save resources
         pros::delay(10);
     }
