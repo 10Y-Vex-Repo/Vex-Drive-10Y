@@ -15,13 +15,8 @@ pros::Motor extra2(13);
 pros::adi::Pneumatics Solenoid('A', false);
 
 // motor groups
-<<<<<<< HEAD
 pros::MotorGroup leftMotors({-8, -9, -10}, pros::MotorGearset::blue);
 pros::MotorGroup rightMotors({18, 19, 20}, pros::MotorGearset::blue);
-=======
-pros::MotorGroup leftMotors({-2, 3, -4}, pros::MotorGearset::blue);
-pros::MotorGroup rightMotors({5, 6, 7}, pros::MotorGearset::blue);
->>>>>>> 83ce456e2367a7f6106dc6796bdd997c1f987908
 
 pros::Imu imu(20);
 
@@ -149,7 +144,7 @@ void autonomous() {
     pros::delay(50);
     leftMotors.move(0);
     rightMotors.move(0);
-<<<<<<< HEAD
+
     // Move to x: 20 and y: 15, and face heading 90. Timeout set to 4000 ms
     //chassis.moveToPose(20, 15, 90, 4000);
     // Move to x: 0 and y: 0 and face heading 270, going backwards. Timeout set to 4000ms
@@ -176,7 +171,6 @@ void autonomous() {
     // wait until the movement is done
     //chassis.waitUntilDone();
     //ros::lcd::print(4, "pure pursuit finished!");
-=======
     // // Move to x: 20 and y: 15, and face heading 90. Timeout set to 4000 ms
     // chassis.moveToPose(20, 15, 90, 4000);
     // // Move to x: 0 and y: 0 and face heading 270, going backwards. Timeout set to 4000ms
@@ -203,7 +197,6 @@ void autonomous() {
     // // wait until the movement is done
     // chassis.waitUntilDone();
     // pros::lcd::print(4, "pure pursuit finished!");
->>>>>>> 83ce456e2367a7f6106dc6796bdd997c1f987908
 }
 
 /**
@@ -213,7 +206,6 @@ void opcontrol() {
     // controller
     // loop to continuously update motors
     while (true) {
-<<<<<<< HEAD
         // get joystick positions
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
@@ -223,8 +215,6 @@ void opcontrol() {
         // delay to save resources
         pros::delay(10);
     }
-}
-=======
         // tank drive code
         // get joystick positions
         //int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
@@ -241,6 +231,4 @@ void opcontrol() {
 
         // delay to save resources
         pros::delay(10);
-    }
 }
->>>>>>> 83ce456e2367a7f6106dc6796bdd997c1f987908
