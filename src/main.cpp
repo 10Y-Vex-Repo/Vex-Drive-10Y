@@ -186,14 +186,11 @@ void opcontrol() {
         
         // move the chassis with curvature drive (TANK DRIVE - commented out)
         // chassis.tank(leftY, rightY);
-
-        // arcade drive code
-        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-
-        chassis.arcade(leftY, rightX);
-
-        // delay to save resources
-        pros::delay(10);
+        
+        int dir = controller.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
+		int turn = controller.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
+		leftMotors.move(dir - turn);                      // Sets left motor voltage
+		rightMotors.move(dir + turn);                     // Sets right motor voltage
+		pros::delay(20);
     }
 }
