@@ -167,10 +167,45 @@ void skillsAuton() {
     chassis.moveToPoint(20, 50, 5000, {.forwards = false});
     toptake.move(127);
     pros::delay(1000);
+    // put up match loader
     toptake.move(0);
     intake.move(0);
     chassis.moveToPoint(20, 60, 5000);
     chassis.moveToPoint(-50, 60, 5000);
+    chassis.turnToPoint(-50, 70, 1000);
+    // put down match loader
+    intake.move(127);
+    chassis.moveToPoint(-50, 70, 5000);
+    pros::delay(1000);
+    chassis.moveToPoint(-50, 65, 1000, {.forwards = false});
+    chassis.moveToPoint(-50, 70, 1000);
+    pros::delay(1000);
+    chassis.moveToPoint(-50, 50, 5000, {.forwards = false});
+    //put up match loader
+    toptake.move(127);
+    pros::delay(1000);
+    toptake.move(0);
+    intake.move(0);
+    chassis.moveToPoint(-50, 60, 5000);
+    chassis.turnToPoint(-40, 50, 1000);
+    intake.move(127);
+    chassis.moveToPoint(-48, 58, 5000, {.maxSpeed = 30});
+    chassis.moveToPoint(-48, 20, 5000);
+    chassis.turnToPoint(-40, 15, 1000);
+    // put down match loader
+    chassis.moveToPoint(-40, 15, 5000);
+    chassis.moveToPoint(-40, 10, 5000);
+    pros::delay(1000);
+    chassis.moveToPoint(-40, 12, 1000, {.forwards = false});
+    chassis.moveToPoint(-40, 10, 1000);
+    chassis.moveToPoint(-40, 20, 5000, {.forwards = false});
+    // put up match loader
+    toptake.move(127);
+    pros::delay(1000);
+    toptake.move(0);
+    intake.move(0);
+    chassis.moveToPoint(-20, 0, 5000);
+    chassis.moveToPoint(-10, 0, 5000);
 }
 
 /**
