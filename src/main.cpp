@@ -7,22 +7,22 @@
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motors
-pros::Motor intake(11);
-pros::Motor extra(12);
-pros::Motor extra2(13);
+pros::Motor intake(14);
+pros::Motor toptake(1);
+pros::Motor extra2(4);
 
 // pnuematics
 pros::adi::Pneumatics Solenoid('A', false);
 
 // motor groups
-pros::MotorGroup leftMotors({-8, -9, -10}, pros::MotorGearset::blue);
-pros::MotorGroup rightMotors({18, 19, 20}, pros::MotorGearset::blue);
+pros::MotorGroup leftMotors({-18, -19, -20}, pros::MotorGearset::blue);
+pros::MotorGroup rightMotors({11, 12, 13}, pros::MotorGearset::blue);
 
-pros::Imu imu(20);
+pros::Imu imu(10);
 
 // tracking wheels
 // horizontal tracking wheel encoder. Rotation sensor, port 20, not reversed
-pros::Rotation horizontalEnc(10);
+pros::Rotation horizontalEnc(17);
 // vertical tracking wheel encoder. Rotation sensor, port 11, reversed
 pros::Rotation verticalEnc(1);
 // horizontal tracking wheel. 2.75" diameter, 5.75" offset, back of the robot (negative)
@@ -135,18 +135,25 @@ ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
 /**
  * Runs during auto
- *
- * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
-    leftMotors.move(45);
-    rightMotors.move(45);
-    pros::delay(50);
+    leftMotors.move(65);
+    rightMotors.move(65);
+    pros::delay(1150);
     leftMotors.move(0);
     rightMotors.move(0);
-
+    pros::delay(10);
+    leftMotors.move(-45);
+    rightMotors.move(45);
+    pros::delay(100);
+    leftMotors.move(0);
+    rightMotors.move(0);
+    intake.move(-127);
+    pros::delay(300);
+    intake.move(0);
     // Move to x: 20 and y: 15, and face heading 90. Timeout set to 4000 ms
-    //chassis.moveToPose(20, 15, 90, 4000);
+    //chassis.setPose(0,0,0);
+    //chassis.moveToPoint(0, 36, 10000);
     // Move to x: 0 and y: 0 and face heading 270, going backwards. Timeout set to 4000ms
     //chassis.moveToPose(0, 0, 270, 4000, {.forwards = false});
     // cancel the movement after it has traveled 10 inches
@@ -185,7 +192,7 @@ void autonomous() {
     // // will always be faster than 100 (out of a maximum of 127)
     // // also force it to turn clockwise, the long way around
     // chassis.turnToHeading(90, 1000, {.direction = AngularDirection::CW_CLOCKWISE, .minSpeed = 100});
-    // // Follow the path in path.txt. Lookahead at 15, Timeout set to 4000
+    // // Folgilow the path in path.txt. Lookahead at 15, Timeout set to 4000
     // // following the path with the back of the robot (forwards = false)
     // // see line 116 to see how to define a path
     // chassis.follow(example_txt, 15, 4000, false);
@@ -212,23 +219,36 @@ void opcontrol() {
         // move the chassis with curvature drive
 	    leftMotors.move(leftY);
         rightMotors.move(rightY);
+
+        // Intake
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+            intake.move(127);
+        } 
+        else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+            intake.move(-127);
+        } 
+        else {
+            intake.move(0);
+        }
+
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+            toptake.move(113);
+        }
+        else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+            toptake.move(-113);
+        } 
+        else {
+            toptake.move(0);
+        }
         // delay to save resources
         pros::delay(10);
     }
-        // tank drive code
-        // get joystick positions
-        //int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        //int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
         
-        // move the chassis with curvature drive (TANK DRIVE - commented out)
-        // chassis.tank(leftY, rightY);
+        //Arcade Controls:
 
-        // arcade drive code
-        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-
-        chassis.arcade(leftY, rightX);
-
-        // delay to save resources
-        pros::delay(10);
+        //int dir = controller.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
+		//int turn = controller.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
+		//leftMotors.move(dir - turn);                      // Sets left motor voltage
+		//rightMotors.move(dir + turn);                     // Sets right motor voltage
+		//pros::delay(20);
 }
