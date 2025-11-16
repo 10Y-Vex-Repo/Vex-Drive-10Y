@@ -133,6 +133,46 @@ void competition_initialize() {}
 // this needs to be put outside a function
 ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
+void skillsAuton() {
+    chassis.turnToPoint(10, 20, 1000);
+    intake.move(127);
+    chassis.moveToPoint(10, 20, 5000);
+    intake.move(0);
+    chassis.turnToPoint(20, 10, 1000);
+    // put down match loader
+    chassis.moveToPoint(20, 10, 5000);
+    chassis.turnToPoint(20, 0, 1000);
+    intake.move(127);
+    chassis.moveToPoint(20, 0, 5000);
+    pros::delay(1000);
+    chassis.moveToPoint(20, 5, 1000, {.forwards = false});
+    chassis.moveToPoint(20, 0, 1000);
+    pros::delay(1000);
+    chassis.moveToPoint(20, 15, 5000, {.forwards = false});
+    toptake.move(127);
+    pros::delay(1000);
+    toptake.move(0);
+    intake.move(0);
+    chassis.moveToPoint(20, 10, 1000);
+    // put up match loader
+    chassis.moveToPoint(30, 10, 1000);
+    chassis.turnToPoint(30, 50, 1000);
+    // put down match loader
+    chassis.moveToPoint(30, 50, 5000);
+    chassis.moveToPoint(20, 60, 5000);
+    chassis.turnToPoint(20, 70, 1000);
+    intake.move(127);
+    chassis.moveToPoint(20, 70, 5000);
+    pros::delay(1000);
+    chassis.moveToPoint(20, 50, 5000, {.forwards = false});
+    toptake.move(127);
+    pros::delay(1000);
+    toptake.move(0);
+    intake.move(0);
+    chassis.moveToPoint(20, 60, 5000);
+    chassis.moveToPoint(-50, 60, 5000);
+}
+
 /**
  * Runs during auto
  */
