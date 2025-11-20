@@ -12,7 +12,7 @@ pros::Motor toptake(1);
 pros::Motor extra2(4);
 
 // pnuematics
-pros::adi::Pneumatics Solenoid('A', false);
+pros::adi::Pneumatics matchLoader('A', false);
 
 // motor groups
 pros::MotorGroup leftMotors({-18, -19, -20}, pros::MotorGearset::blue);
@@ -131,7 +131,7 @@ void competition_initialize() {}
 
 // get a path used for pure pursuit
 // this needs to be put outside a function
-ASSET(example_txt); // '.' replaced with "_" to make c++ happy
+//ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
 void skillsAuton() {
     chassis.turnToPoint(10, 20, 1000);
@@ -139,7 +139,7 @@ void skillsAuton() {
     chassis.moveToPoint(10, 20, 5000);
     intake.move(0);
     chassis.turnToPoint(20, 10, 1000);
-    // put down match loader
+    // put down ml
     chassis.moveToPoint(20, 10, 5000);
     chassis.turnToPoint(20, 0, 1000);
     intake.move(127);
