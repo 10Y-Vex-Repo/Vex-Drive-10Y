@@ -1,6 +1,7 @@
 #include "main.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "lemlib/chassis/trackingWheel.hpp"
+#include "pros/misc.h"
 #include "pros/motors.hpp"
 
 // controller
@@ -9,7 +10,6 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 // motors
 pros::Motor intake(14);
 pros::Motor toptake(1);
-pros::Motor extra2(4);
 
 // pnuematics
 pros::adi::Pneumatics matchLoader('A', false);
@@ -235,12 +235,15 @@ void opcontrol() {
     // loop to continuously update motors
     while (true) {
         // get joystick positions
-        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+        //int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        //int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
         // move the chassis with curvature drive
-	    leftMotors.move(leftY);
-        rightMotors.move(rightY);
-
+	    //leftMotors.move(leftY);
+        //rightMotors.move(rightY);
+        int dir = controller.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
+		int turn = controller.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
+		leftMotors.move(dir - turn);                      // Sets left motor voltage
+		rightMotors.move(dir + turn);                     // Sets right motor voltage
         // Intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
             intake.move(127);
@@ -260,6 +263,14 @@ void opcontrol() {
         } 
         else {
             toptake.move(0);
+        }
+
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+            if (matchLoader.is_extended() == true) {
+                matchLoader.retract();
+            } else {
+                matchLoader.extend();
+            }
         }
         // delay to save resources
         pros::delay(10);
