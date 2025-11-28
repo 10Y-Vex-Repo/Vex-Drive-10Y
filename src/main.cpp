@@ -1,6 +1,7 @@
 #include "main.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "lemlib/chassis/trackingWheel.hpp"
+#include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/motors.hpp"
 
@@ -13,6 +14,7 @@ pros::Motor toptake(1);
 
 // pnuematics
 pros::adi::Pneumatics matchLoader('A', false);
+pros::adi::Pneumatics descore('B', true);
 
 // motor groups
 pros::MotorGroup leftMotors({-18, -19, -20}, pros::MotorGearset::blue);
@@ -272,6 +274,15 @@ void opcontrol() {
                 matchLoader.extend();
             }
         }
+
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+            if (descore.is_extended() == true) {
+                descore.retract();
+            } else {
+                descore.extend();
+            }
+        }
+
         // delay to save resources
         pros::delay(10);
     }
