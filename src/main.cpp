@@ -4,21 +4,24 @@
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/motors.hpp"
+#include "pros/rtos.hpp"
 
 // controller
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motors
-pros::Motor intake(14);
-pros::Motor toptake(1);
+pros::Motor intake(20, pros::MotorGearset::blue);
+pros::Motor toptake(11, pros::MotorGearset::blue);
 
 // pnuematics
-pros::adi::Pneumatics matchLoader('A', false);
-pros::adi::Pneumatics descore('B', true);
+pros::adi::Pneumatics descore('A', true);
+pros::adi::Pneumatics matchLoader('B', true);
 
 // motor groups
-pros::MotorGroup leftMotors({-18, -19, -20}, pros::MotorGearset::blue);
-pros::MotorGroup rightMotors({11, 12, 13}, pros::MotorGearset::blue);
+pros::MotorGroup leftMotors({12, 13, 14}, pros::MotorGearset::blue);
+pros::MotorGroup rightMotors({-17, -18, -19}, pros::MotorGearset::blue);
+pros::MotorGroup aleftMotors({-12, -13, -14}, pros::MotorGearset::blue);
+pros::MotorGroup arightMotors({17, 18, 19}, pros::MotorGearset::blue);
 
 pros::Imu imu(10);
 
@@ -32,8 +35,8 @@ pros::Imu imu(10);
 //lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_275, -2.5);
 
 // drivetrain settings
-lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
-                              &rightMotors, // right motor group
+lemlib::Drivetrain drivetrain(&aleftMotors, // left motor group
+                              &arightMotors, // right motor group
                               10, // 10 inch track width
                               lemlib::Omniwheel::OLD_325, // using new 4" omnis
                               450, // drivetrain rpm is 360
@@ -213,20 +216,60 @@ void skillsAuton() {
  * Runs during auto
  */
 void autonomous() {
-    leftMotors.move(65);
-    rightMotors.move(65);
-    pros::delay(1150);
-    leftMotors.move(0);
-    rightMotors.move(0);
-    pros::delay(10);
-    leftMotors.move(-45);
-    rightMotors.move(45);
+    intake.move(127);
+    aleftMotors.move(65);
+    arightMotors.move(65);
     pros::delay(100);
-    leftMotors.move(0);
-    rightMotors.move(0);
-    intake.move(-127);
-    pros::delay(300);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    pros::delay(10);
+    //turn right align
+    aleftMotors.move(25);
+    arightMotors.move(-25);
+    pros::delay(50);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    pros::delay(10);
+    //move to middle and intake
+    aleftMotors.move(65);
+    arightMotors.move(65);
+    pros::delay(500);
     intake.move(0);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    pros::delay(10);
+    //turn right
+    aleftMotors.move(25);
+    arightMotors.move(-25);
+    pros::delay(75);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    pros::delay(10);
+    //move to align to long goal
+    aleftMotors.move(50);
+    arightMotors.move(50);
+    pros::delay(500);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    pros::delay(10);
+    //turn
+    aleftMotors.move(20);
+    arightMotors.move(20);
+    pros::delay(50);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    pros::delay(10);
+    //go to long goal
+    aleftMotors.move(-50);
+    arightMotors.move(-50);
+    pros::delay(200);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    intake.move(127);
+    toptake.move(127);
+    pros::delay(1500);
+    intake.move(0);
+    toptake.move(0);
 }
 
 /**
@@ -240,12 +283,17 @@ void opcontrol() {
         //int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         //int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
         // move the chassis with curvature drive
-	    //leftMotors.move(leftY);
+        //leftMotors.move(leftY);
         //rightMotors.move(rightY);
-        int dir = controller.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
-		int turn = controller.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
-		leftMotors.move(dir - turn);                      // Sets left motor voltage
-		rightMotors.move(dir + turn);                     // Sets right motor voltage
+        int power = controller.get_analog( pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int turn = controller.get_analog( pros::E_CONTROLLER_ANALOG_RIGHT_X);
+
+        int Left = power - turn;
+        int Right = power + turn;
+
+        leftMotors.move(Left);
+        rightMotors.move(Right);
+
         // Intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
             intake.move(127);
@@ -258,10 +306,10 @@ void opcontrol() {
         }
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            toptake.move(113);
+            toptake.move(127);
         }
         else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            toptake.move(-113);
+            toptake.move(-127);
         } 
         else {
             toptake.move(0);
@@ -270,16 +318,20 @@ void opcontrol() {
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             if (matchLoader.is_extended() == true) {
                 matchLoader.retract();
+                pros::delay(500);
             } else {
                 matchLoader.extend();
+                pros::delay(500);
             }
         }
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
             if (descore.is_extended() == true) {
                 descore.retract();
+                pros::delay(500);
             } else {
                 descore.extend();
+                pros::delay(500);
             }
         }
 
@@ -290,8 +342,8 @@ void opcontrol() {
         //Arcade Controls:
 
         //int dir = controller.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
-		//int turn = controller.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
-		//leftMotors.move(dir - turn);                      // Sets left motor voltage
-		//rightMotors.move(dir + turn);                     // Sets right motor voltage
-		//pros::delay(20);
+        //int turn = controller.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
+        //leftMotors.move(dir - turn);                      // Sets left motor voltage
+        //rightMotors.move(dir + turn);                     // Sets right motor voltage
+        //pros::delay(20);
 }
