@@ -254,7 +254,7 @@ void autonomous() {
     pros::delay(10);
     //turn
     aleftMotors.move(20);
-    arightMotors.move(20);
+    arightMotors.move(-20);
     pros::delay(50);
     aleftMotors.move(0);
     arightMotors.move(0);
