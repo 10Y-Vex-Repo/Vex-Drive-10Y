@@ -12,16 +12,17 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 // motors
 pros::Motor intake(20, pros::MotorGearset::blue);
 pros::Motor toptake(11, pros::MotorGearset::blue);
+pros::Motor toptake2(19, pros::MotorGearset::blue);
 
 // pnuematics
 pros::adi::Pneumatics descore('A', true);
-pros::adi::Pneumatics matchLoader('B', true);
+pros::adi::Pneumatics matchLoader('F', true);
 
 // motor groups
-pros::MotorGroup leftMotors({12, 13, 14}, pros::MotorGearset::blue);
-pros::MotorGroup rightMotors({-17, -18, -19}, pros::MotorGearset::blue);
-pros::MotorGroup aleftMotors({-12, -13, -14}, pros::MotorGearset::blue);
-pros::MotorGroup arightMotors({17, 18, 19}, pros::MotorGearset::blue);
+pros::MotorGroup leftMotors({13, 14, 15}, pros::MotorGearset::blue);
+pros::MotorGroup rightMotors({-16, -17, -18}, pros::MotorGearset::blue);
+pros::MotorGroup aleftMotors({-13, -14, -15}, pros::MotorGearset::blue);
+pros::MotorGroup arightMotors({16, 17, 18}, pros::MotorGearset::blue);
 
 pros::Imu imu(10);
 
@@ -99,6 +100,8 @@ lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors
 void initialize() {
     pros::lcd::initialize(); // initialize brain screen
     chassis.calibrate(); // calibrate sensors
+
+    descore.retract();
 
     // the default rate is 50. however, if you need to change the rate, you
     // can do the following.
@@ -216,60 +219,68 @@ void skillsAuton() {
  * Runs during auto
  */
 void autonomous() {
-    intake.move(127);
+    imu.reset();
+    imu.tare_rotation();
     aleftMotors.move(65);
     arightMotors.move(65);
-    pros::delay(100);
+    intake.move(-127);
+    pros::delay(400);  
     aleftMotors.move(0);
     arightMotors.move(0);
-    pros::delay(10);
-    //turn right align
     aleftMotors.move(25);
-    arightMotors.move(-25);
-    pros::delay(50);
+    arightMotors.move(25); 
+    pros::delay(850);
     aleftMotors.move(0);
     arightMotors.move(0);
-    pros::delay(10);
-    //move to middle and intake
-    aleftMotors.move(65);
-    arightMotors.move(65);
-    pros::delay(500);
+    aleftMotors.move(-30);
+    arightMotors.move(30);
+    pros::delay(600);
     intake.move(0);
     aleftMotors.move(0);
     arightMotors.move(0);
-    pros::delay(10);
-    //turn right
-    aleftMotors.move(25);
-    arightMotors.move(-25);
-    pros::delay(75);
-    aleftMotors.move(0);
-    arightMotors.move(0);
-    pros::delay(10);
-    //move to align to long goal
     aleftMotors.move(50);
     arightMotors.move(50);
+    pros::delay(340);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    intake.move(90);
+    pros::delay(3000);
+    intake.move(0);
+    aleftMotors.move(-65);
+    arightMotors.move(-65);
+    pros::delay(1300);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    aleftMotors.move(-30);
+    arightMotors.move(30);
+    pros::delay(1400);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    aleftMotors.move(65);
+    arightMotors.move(65);
+    intake.move(-127);
     pros::delay(500);
     aleftMotors.move(0);
     arightMotors.move(0);
-    pros::delay(10);
-    //turn
-    aleftMotors.move(20);
-    arightMotors.move(-20);
-    pros::delay(50);
+    pros::delay(3000);
+    aleftMotors.move(-65);
+    arightMotors.move(-65);
+    pros::delay(1000);
     aleftMotors.move(0);
     arightMotors.move(0);
-    pros::delay(10);
-    //go to long goal
-    aleftMotors.move(-50);
-    arightMotors.move(-50);
-    pros::delay(200);
-    aleftMotors.move(0);
-    arightMotors.move(0);
-    intake.move(127);
     toptake.move(127);
-    pros::delay(1500);
+    toptake2.move(127);
+    pros::delay(3000);
     intake.move(0);
     toptake.move(0);
+    toptake2.move(0);
+    // intake.move(127);
+    // aleftMotors.move(65);
+    // arightMotors.move(65);
+    // pros::delay(100);
+    // aleftMotors.move(0);
+    // arightMotors.move(0);
+    // pros::delay(10);
 }
 
 /**
@@ -285,14 +296,19 @@ void opcontrol() {
         // move the chassis with curvature drive
         //leftMotors.move(leftY);
         //rightMotors.move(rightY);
-        int power = controller.get_analog( pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int turn = controller.get_analog( pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        int dir = controller.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
+        int turn = controller.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
+        leftMotors.move(dir - turn);                      // Sets left motor voltage
+        rightMotors.move(dir + turn);                     // Sets right motor voltage
+        pros::delay(20);
+        // int power = controller.get_analog( pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        // int turn = controller.get_analog( pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-        int Left = power - turn;
-        int Right = power + turn;
+        // int Left = power - turn;
+        // int Right = power + turn;
 
-        leftMotors.move(Left);
-        rightMotors.move(Right);
+        // leftMotors.move(Left);
+        // rightMotors.move(Right);
 
         // Intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
@@ -307,12 +323,15 @@ void opcontrol() {
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
             toptake.move(127);
+            toptake2.move(127);
         }
         else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
             toptake.move(-127);
+            toptake2.move(-127);
         } 
         else {
             toptake.move(0);
+            toptake2.move(0);
         }
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {

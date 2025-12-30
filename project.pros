@@ -637,7 +637,7 @@
     "upload_options": {
       "description": "10Y",
       "icon": "robot",
-      "slot": 1
+      "slot": 3
     },
     "use_early_access": false
   }
