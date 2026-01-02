@@ -9,16 +9,16 @@
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motors
-pros::Motor intake(14);
-pros::Motor toptake(1);
+pros::MotorGroup intake({11, 20}, pros::MotorGearset::blue);
+pros::Motor toptake(16, pros::MotorGearset::blue);
 
 // pnuematics
 pros::adi::Pneumatics matchLoader('A', false);
 pros::adi::Pneumatics descore('B', true);
 
 // motor groups
-pros::MotorGroup leftMotors({-18, -19, -20}, pros::MotorGearset::blue);
-pros::MotorGroup rightMotors({11, 12, 13}, pros::MotorGearset::blue);
+pros::MotorGroup leftMotors({-18, -19, -17}, pros::MotorGearset::blue);
+pros::MotorGroup rightMotors({14, 12, 13}, pros::MotorGearset::blue);
 
 pros::Imu imu(10);
 
