@@ -17,7 +17,7 @@ pros::Motor toptake2(19, pros::MotorGearset::blue);
 
 // pnuematics
 pros::adi::Pneumatics descore('A', false);
-pros::adi::Pneumatics matchLoader('B', true);
+pros::adi::Pneumatics matchLoader('F', true);
 
 // motor groups
 pros::MotorGroup leftMotors({15, 13, 14}, pros::MotorGearset::blue);
@@ -235,8 +235,10 @@ void autonomous() {
     pros::delay(1500);
     intake.move(0);
     toptakes(0, 0);
-    chassis.moveToPose(-29, 0, -138, 4000, {.minSpeed = 100});
+    matchLoader.extend();
+    chassis.moveToPose(-29, 0, -138, 3000, {.minSpeed = 100});
     intake.move(-127);
+    pros::delay(1000);
 }
 /**
  * Runs in driver control
