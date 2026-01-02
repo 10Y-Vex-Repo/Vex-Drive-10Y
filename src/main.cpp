@@ -141,6 +141,7 @@ void competition_initialize() {}
 //ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
 void skillsAuton() {
+    chassis.setPose(0, 0, 0);
     chassis.turnToPoint(10, 20, 1000);
     intake.move(127);
     chassis.moveToPoint(10, 20, 5000);
@@ -219,8 +220,7 @@ void skillsAuton() {
  * Runs during auto
  */
 void autonomous() {
-    imu.reset();
-    imu.tare_rotation();
+    descore.extend();
     aleftMotors.move(65);
     arightMotors.move(65);
     intake.move(-127);
@@ -229,7 +229,10 @@ void autonomous() {
     arightMotors.move(0);
     aleftMotors.move(25);
     arightMotors.move(25); 
-    pros::delay(850);
+    pros::delay(500);
+    matchLoader.extend();
+    pros::delay(350);
+    matchLoader.retract();
     aleftMotors.move(0);
     arightMotors.move(0);
     aleftMotors.move(-30);
@@ -274,13 +277,32 @@ void autonomous() {
     intake.move(0);
     toptake.move(0);
     toptake2.move(0);
-    // intake.move(127);
-    // aleftMotors.move(65);
-    // arightMotors.move(65);
-    // pros::delay(100);
-    // aleftMotors.move(0);
-    // arightMotors.move(0);
-    // pros::delay(10);
+    aleftMotors.move(60);
+    arightMotors.move(60);
+    pros::delay(200);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    aleftMotors.move(35);
+    arightMotors.move(-35);
+    pros::delay(600);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    aleftMotors.move(60);
+    arightMotors.move(60);
+    pros::delay(500);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    aleftMotors.move(-35);
+    arightMotors.move(35);
+    pros::delay(500);
+    aleftMotors.move(0);
+    arightMotors.move(0);
+    descore.retract();
+    aleftMotors.move(-60);
+    arightMotors.move(-60);
+    pros::delay(300);
+    aleftMotors.move(0);
+    arightMotors.move(0);
 }
 
 /**
