@@ -145,6 +145,7 @@ void toptakes(int topTake, int midtake) {
 //ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
 void skillsAuton() {
+    chassis.setPose(0, 0, 0);
     chassis.turnToPoint(10, 20, 1000);
     intake.move(127);
     chassis.moveToPoint(10, 20, 5000);
