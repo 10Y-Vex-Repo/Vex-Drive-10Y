@@ -4,22 +4,28 @@
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/motors.hpp"
+#include "pros/rtos.h"
+#include "pros/rtos.hpp"
 
 // controller
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motors
-pros::MotorGroup intake({11, 20}, pros::MotorGearset::blue);
-pros::Motor toptake(16, pros::MotorGearset::blue);
+pros::Motor intake(20, pros::MotorGearset::blue);
+pros::Motor toptake(11, pros::MotorGearset::blue);
+pros::Motor toptake2(19, pros::MotorGearset::blue);
 
 // pnuematics
-pros::adi::Pneumatics matchLoader('A', false);
-pros::adi::Pneumatics descore('B', true);
+pros::adi::Pneumatics descore('A', false);
+pros::adi::Pneumatics matchLoader('B', true);
 
 // motor groups
-pros::MotorGroup leftMotors({-18, -19, -17}, pros::MotorGearset::blue);
-pros::MotorGroup rightMotors({14, 12, 13}, pros::MotorGearset::blue);
+pros::MotorGroup leftMotors({15, 13, 14}, pros::MotorGearset::blue);
+pros::MotorGroup rightMotors({-17, -18, -16}, pros::MotorGearset::blue);
+pros::MotorGroup aleftMotors({-15, -13, -14}, pros::MotorGearset::blue);
+pros::MotorGroup arightMotors({17, 18, 16}, pros::MotorGearset::blue);
 
+// sensor
 pros::Imu imu(10);
 
 // tracking wheels
@@ -32,36 +38,36 @@ pros::Imu imu(10);
 //lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_275, -2.5);
 
 // drivetrain settings
-lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
-                              &rightMotors, // right motor group
-                              10, // 10 inch track width
+lemlib::Drivetrain drivetrain(&aleftMotors, // left motor group
+                              &arightMotors, // right motor group
+                              11, // 11 inch track width
                               lemlib::Omniwheel::OLD_325, // using new 4" omnis
-                              450, // drivetrain rpm is 360
+                              360, // drivetrain rpm is 360
                               2 // horizontal drift is 2. If we had traction wheels, it would have been 8
 );
 
 // lateral motion controller
-lemlib::ControllerSettings linearController(10, // proportional gain (kP)
-                                            0, // integral gain (kI)
-                                            3, // derivative gain (kD)
-                                            3, // anti windup
-                                            1, // small error range, in inches
-                                            100, // small error range timeout, in milliseconds
-                                            3, // large error range, in inches
-                                            500, // large error range timeout, in milliseconds
-                                            20 // maximum acceleration (slew)
+lemlib::ControllerSettings lateralController(10, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              3, // derivative gain (kD)
+                                              0, // anti windup
+                                              0, // small error range, in inches
+                                              0, // small error range timeout, in milliseconds
+                                              0, // large error range, in inches
+                                              0, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
 );
 
 // angular motion controller
 lemlib::ControllerSettings angularController(2, // proportional gain (kP)
-                                             0, // integral gain (kI)
-                                             10, // derivative gain (kD)
-                                             3, // anti windup
-                                             1, // small error range, in degrees
-                                             100, // small error range timeout, in milliseconds
-                                             3, // large error range, in degrees
-                                             500, // large error range timeout, in milliseconds
-                                             0 // maximum acceleration (slew)
+                                              0, // integral gain (kI)
+                                              10, // derivative gain (kD)
+                                              3, // anti windup
+                                              1, // small error range, in inches
+                                              100, // small error range timeout, in milliseconds
+                                              3, // large error range, in inches
+                                              500, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
 );
 
 // sensors for odometry
@@ -85,7 +91,7 @@ lemlib::ExpoDriveCurve steerCurve(3, // joystick deadband out of 127
 );
 
 // create the chassis
-lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
+lemlib::Chassis chassis(drivetrain, lateralController, angularController, sensors, &throttleCurve, &steerCurve);
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -130,6 +136,10 @@ void disabled() {}
  */
 void competition_initialize() {}
 
+void toptakes(int topTake, int midtake) {
+    toptake.move(topTake);
+    toptake2.move(midtake);
+}
 // get a path used for pure pursuit
 // this needs to be put outside a function
 //ASSET(example_txt); // '.' replaced with "_" to make c++ happy
@@ -213,39 +223,44 @@ void skillsAuton() {
  * Runs during auto
  */
 void autonomous() {
-    leftMotors.move(65);
-    rightMotors.move(65);
-    pros::delay(1150);
-    leftMotors.move(0);
-    rightMotors.move(0);
-    pros::delay(10);
-    leftMotors.move(-45);
-    rightMotors.move(45);
-    pros::delay(100);
-    leftMotors.move(0);
-    rightMotors.move(0);
+    chassis.setPose(0, 0, 0);
     intake.move(-127);
-    pros::delay(300);
+    chassis.moveToPoint(0, 18, 2000, {.maxSpeed = 40});
+    chassis.turnToHeading(-108, 500);
     intake.move(0);
+    chassis.moveToPoint(12, 20, 1500, {.forwards = false});
+    pros::delay(1500);
+    intake.move(-127);
+    toptakes(-127, -114);
+    pros::delay(1500);
+    intake.move(0);
+    toptakes(0, 0);
+    chassis.moveToPose(-29, 0, -138, 4000, {.minSpeed = 100});
+    intake.move(-127);
 }
-
 /**
  * Runs in driver control
  */
+
 void opcontrol() {
     // controller
     // loop to continuously update motors
     while (true) {
         // get joystick positions
-        //int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        //int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
         // move the chassis with curvature drive
-	    //leftMotors.move(leftY);
-        //rightMotors.move(rightY);
-        int dir = controller.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
-		int turn = controller.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
-		leftMotors.move(dir - turn);                      // Sets left motor voltage
-		rightMotors.move(dir + turn);                     // Sets right motor voltage
+	    aleftMotors.move(leftY);
+        arightMotors.move(rightY);
+        //int power = controller.get_analog( pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        //int turn = controller.get_analog( pros::E_CONTROLLER_ANALOG_RIGHT_X);
+
+        //int Left = power - turn;
+        //int Right = power + turn;
+
+        //leftMotors.move(Left);
+        //rightMotors.move(Right);
+
         // Intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
             intake.move(127);
@@ -258,28 +273,32 @@ void opcontrol() {
         }
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            toptake.move(113);
+            toptakes(-127, 114);
         }
         else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            toptake.move(-113);
+            toptakes(127, -63);
         } 
         else {
-            toptake.move(0);
-        }
-
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-            if (matchLoader.is_extended() == true) {
-                matchLoader.retract();
-            } else {
-                matchLoader.extend();
-            }
+            toptakes(0, 0);
         }
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+            if (matchLoader.is_extended() == true) {
+                matchLoader.retract();
+                pros::delay(500);
+            } else {
+                matchLoader.extend();
+                pros::delay(500);
+            }
+        }
+
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             if (descore.is_extended() == true) {
                 descore.retract();
+                pros::delay(500);
             } else {
                 descore.extend();
+                pros::delay(500);
             }
         }
 
@@ -289,6 +308,7 @@ void opcontrol() {
         
         //Arcade Controls:
 
+        
         //int dir = controller.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
 		//int turn = controller.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
 		//leftMotors.move(dir - turn);                      // Sets left motor voltage
