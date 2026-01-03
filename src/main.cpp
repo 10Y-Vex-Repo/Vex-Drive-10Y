@@ -225,21 +225,22 @@ void skillsAuton() {
  */
 void autonomous() {
     chassis.setPose(0, 0, 0);
-    intake.move(-127);
+    //intake.move(-127);
     chassis.moveToPoint(0, 18, 2000, {.maxSpeed = 40});
     chassis.turnToHeading(-108, 500);
-    intake.move(0);
+    //intake.move(0);
     chassis.moveToPoint(12, 20, 1500, {.forwards = false});
     pros::delay(1500);
-    intake.move(-127);
-    toptakes(-127, -114);
+    //intake.move(-127);
+    //toptakes(-127, -114);
     pros::delay(1500);
-    intake.move(0);
-    toptakes(0, 0);
+    //intake.move(0);
+    //toptakes(0, 0);
     matchLoader.extend();
     chassis.moveToPose(-29, 0, -138, 3000, {.minSpeed = 100});
-    intake.move(-127);
+    //intake.move(-127);
     pros::delay(1000);
+    chassis.moveToPoint(-29, 20, 1500, {.forwards = false});
 }
 /**
  * Runs in driver control

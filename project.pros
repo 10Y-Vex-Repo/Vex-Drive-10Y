@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "10YTankDrive",
+    "project_name": "Auton test",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -637,11 +637,7 @@
     "upload_options": {
       "description": "10Y",
       "icon": "robot",
-<<<<<<< HEAD
-      "slot": 1
-=======
-      "slot": 3
->>>>>>> 1cb78f160e2e4a5002aa7aca6a09e5acb13df044
+      "slot": 2
     },
     "use_early_access": false
   }
