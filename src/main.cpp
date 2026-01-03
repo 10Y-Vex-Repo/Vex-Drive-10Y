@@ -224,23 +224,32 @@ void skillsAuton() {
  * Runs during auto
  */
 void autonomous() {
+    //robot starts with the back touching the front left corner of the parking space
+    //robot starts facing forward, not at an angle
     chassis.setPose(0, 0, 0);
-    //intake.move(-127);
-    chassis.moveToPoint(0, 18, 2000, {.maxSpeed = 40});
-    chassis.turnToHeading(-108, 500);
-    //intake.move(0);
-    chassis.moveToPoint(12, 20, 1500, {.forwards = false});
+    intake.move(-127);
+    chassis.moveToPoint(-6, 18, 3000, {.maxSpeed = 40});
+    chassis.turnToHeading(-135, 1000);
+    intake.move(0);
+    chassis.moveToPoint(0, 23, 1500, {.forwards = false});
+    pros::delay(500);
+    intake.move(-127);
+    toptakes(-127, -114);
     pros::delay(1500);
-    //intake.move(-127);
-    //toptakes(-127, -114);
-    pros::delay(1500);
-    //intake.move(0);
-    //toptakes(0, 0);
+    intake.move(0);
+    toptakes(0, 0);
     matchLoader.extend();
-    chassis.moveToPose(-29, 0, -138, 3000, {.minSpeed = 100});
-    //intake.move(-127);
-    pros::delay(1000);
-    chassis.moveToPoint(-29, 20, 1500, {.forwards = false});
+    chassis.moveToPoint(-28, 0, 2000);
+    pros::delay(100);
+    chassis.turnToPoint(-28, -15, 1000);
+    intake.move(-127);
+    chassis.moveToPoint(-28, -15, 3000);
+    pros::delay(3000);
+    chassis.moveToPoint(-28, 10, 3000, {.forwards = false, .maxSpeed = 100});
+    toptakes(-127,-144);
+    pros::delay(2000);
+    intake.move(0);
+    toptakes(0,0);
 }
 /**
  * Runs in driver control
@@ -251,19 +260,19 @@ void opcontrol() {
     // loop to continuously update motors
     while (true) {
         // get joystick positions
-        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-        // move the chassis with curvature drive
-	    aleftMotors.move(leftY);
-        arightMotors.move(rightY);
-        //int power = controller.get_analog( pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        //int turn = controller.get_analog( pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        // int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        // int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+        // // move the chassis with curvature drive
+	    // aleftMotors.move(leftY);
+        // arightMotors.move(rightY);
+        int power = controller.get_analog( pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int turn = controller.get_analog( pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-        //int Left = power - turn;
-        //int Right = power + turn;
+        int Left = power - turn;
+        int Right = power + turn;
 
-        //leftMotors.move(Left);
-        //rightMotors.move(Right);
+        leftMotors.move(Left);
+        rightMotors.move(Right);
 
         // Intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
