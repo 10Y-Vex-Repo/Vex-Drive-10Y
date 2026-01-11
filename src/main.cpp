@@ -1,11 +1,13 @@
 #include "main.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
+#include "lemlib/chassis/chassis.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/motors.hpp"
 #include "pros/rtos.h"
 #include "pros/rtos.hpp"
+#include <cmath>
 
 // controller
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
@@ -17,7 +19,7 @@ pros::Motor toptake2(19, pros::MotorGearset::blue);
 
 // pnuematics
 pros::adi::Pneumatics descore('A', false);
-pros::adi::Pneumatics matchLoader('F', true);
+pros::adi::Pneumatics matchLoader('F', false);
 
 // motor groups
 pros::MotorGroup leftMotors({15, 13, 14}, pros::MotorGearset::blue);
@@ -63,10 +65,10 @@ lemlib::ControllerSettings angularController(2, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               10, // derivative gain (kD)
                                               3, // anti windup
-                                              1, // small error range, in inches
-                                              100, // small error range timeout, in milliseconds
-                                              3, // large error range, in inches
-                                              500, // large error range timeout, in milliseconds
+                                              2, // small error range, in inches
+                                              50, // small error range timeout, in milliseconds
+                                              5, // large error range, in inches
+                                              200, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
 );
 
@@ -144,80 +146,142 @@ void toptakes(int topTake, int midtake) {
 // this needs to be put outside a function
 //ASSET(example_txt); // '.' replaced with "_" to make c++ happy
 
+
 void skillsAuton() {
     chassis.setPose(0, 0, 0);
-    chassis.turnToPoint(10, 20, 1000);
-    intake.move(127);
-    chassis.moveToPoint(10, 20, 5000);
+    intake.move(-127);
+    toptakes(-127, 0);
+    chassis.moveToPoint(-7, 20, 2000, {.maxSpeed = 40});
+    pros::delay(1400);
+    matchLoader.extend();
+    chassis.moveToPoint(-6.5, 19, 500);
+    chassis.turnToHeading(-135, 1000);
     intake.move(0);
-    chassis.turnToPoint(20, 10, 1000);
-    // put down ml
-    chassis.moveToPoint(20, 10, 5000);
-    chassis.turnToPoint(20, 0, 1000);
-    intake.move(127);
-    chassis.moveToPoint(20, 0, 5000);
-    pros::delay(1000);
-    chassis.moveToPoint(20, 5, 1000, {.forwards = false});
-    chassis.moveToPoint(20, 0, 1000);
-    pros::delay(1000);
-    chassis.moveToPoint(20, 15, 5000, {.forwards = false});
-    toptake.move(127);
-    pros::delay(1000);
-    toptake.move(0);
+    chassis.moveToPoint(2, 24.5, 1500, {.forwards = false});
+    pros::delay(500);
+    matchLoader.retract();
+    intake.move(-80);
+    toptakes(-127, -114);
+    pros::delay(3000);
     intake.move(0);
-    chassis.moveToPoint(20, 10, 1000);
-    // put up match loader
-    chassis.moveToPoint(30, 10, 1000);
-    chassis.turnToPoint(30, 50, 1000);
-    // put down match loader
-    chassis.moveToPoint(30, 50, 5000);
-    chassis.moveToPoint(20, 60, 5000);
-    chassis.turnToPoint(20, 70, 1000);
-    intake.move(127);
-    chassis.moveToPoint(20, 70, 5000);
-    pros::delay(1000);
-    chassis.moveToPoint(20, 50, 5000, {.forwards = false});
-    toptake.move(127);
-    pros::delay(1000);
-    // put up match loader
-    toptake.move(0);
+    toptakes(0, 0);
+    chassis.moveToPoint(-26.5, 0, 1500);
+    pros::delay(100);
+    chassis.turnToPoint(-26.5, -15, 1000);
+    matchLoader.extend();
+    intake.move(-127);
+    toptakes(-60, 0);
+    chassis.moveToPoint(-26.5 , -15, 1500, {.maxSpeed = 100});
+    pros::delay(3000);
+    chassis.moveToPoint(-27.5, 11, 2000, {.forwards = false, .maxSpeed = 100});
+    toptakes(0, 0);
+    pros::delay(500);
+    toptakes(127,144);
+    pros::delay(3000);
+    matchLoader.retract();
     intake.move(0);
-    chassis.moveToPoint(20, 60, 5000);
-    chassis.moveToPoint(-50, 60, 5000);
-    chassis.turnToPoint(-50, 70, 1000);
-    // put down match loader
-    intake.move(127);
-    chassis.moveToPoint(-50, 70, 5000);
-    pros::delay(1000);
-    chassis.moveToPoint(-50, 65, 1000, {.forwards = false});
-    chassis.moveToPoint(-50, 70, 1000);
-    pros::delay(1000);
-    chassis.moveToPoint(-50, 50, 5000, {.forwards = false});
-    //put up match loader
-    toptake.move(127);
-    pros::delay(1000);
-    toptake.move(0);
+    toptakes(0,0);
+    chassis.moveToPoint(-27.5, 7, 800, {.minSpeed = 127});
+    pros::delay(500);
+    chassis.moveToPoint(-27.5, 10, 1500, {.forwards = false, .minSpeed = 120});
+    pros::delay(500);
+    descore.extend();
+    chassis.moveToPoint(-27.5, 5, 1000);
+    chassis.swingToHeading(90, lemlib::DriveSide::LEFT, 1000);
+    chassis.turnToPoint(-10, -20, 1000);
+    intake.move(-127);
+    chassis.moveToPose(-10, -9, 90, 15000, {.minSpeed = 100});
+    chassis.moveToPoint(20, -13, 15000, {.minSpeed = 127});
+    // chassis.setPose(0, 0, 180);
+    // chassis.moveToPoint(0, 10, 2000, {.forwards = false});
+    // intake.move(0);
+    // toptakes(0, 0);
+    // chassis.moveToPoint(-10, 28, 2000, {.forwards = false});
+    // chassis.turnToHeading(-135, 1000);
+    // chassis.moveToPoint(-2, 34, 1500, {.forwards = false});
+    // intake.move(-80);
+    // toptakes(-80, -60);
+    // pros::delay(5000);
+    // chassis.moveToPoint(-10, 28, 2000);
+    // chassis.turnToPoint(0, 15, 1000);
+    // chassis.moveToPoint(0, 15, 2000);
+    // chassis.turnToPoint(0, 0, 1000);
+    // chassis.moveToPoint(0, 0, 3000);
+
+}
+
+void leftAuton() {
+    chassis.setPose(0, 0, 0);
+    intake.move(-127);
+    toptakes(-127, 0);
+    chassis.moveToPoint(-8, 22, 2000, {.maxSpeed = 40});
+    pros::delay(1400);
+    matchLoader.extend();
+    chassis.moveToPoint(-6.5, 19, 500);
+    chassis.turnToHeading(-135, 1000);
+    matchLoader.retract();
     intake.move(0);
-    chassis.moveToPoint(-50, 60, 5000);
-    chassis.turnToPoint(-40, 50, 1000);
-    intake.move(127);
-    chassis.moveToPoint(-48, 58, 5000, {.maxSpeed = 30});
-    chassis.moveToPoint(-48, 20, 5000);
-    chassis.turnToPoint(-40, 15, 1000);
-    // put down match loader
-    chassis.moveToPoint(-40, 15, 5000);
-    chassis.moveToPoint(-40, 10, 5000);
-    pros::delay(1000);
-    chassis.moveToPoint(-40, 12, 1000, {.forwards = false});
-    chassis.moveToPoint(-40, 10, 1000);
-    chassis.moveToPoint(-40, 20, 5000, {.forwards = false});
-    // put up match loader
-    toptake.move(127);
-    pros::delay(1000);
-    toptake.move(0);
+    chassis.moveToPoint(2, 24.5, 1500, {.forwards = false});
+    pros::delay(500);
+    intake.move(-80);
+    toptakes(-127, -114);
+    pros::delay(1500);
     intake.move(0);
-    chassis.moveToPoint(-20, 0, 5000);
-    chassis.moveToPoint(-10, 0, 5000);
+    toptakes(0, 0);
+    chassis.moveToPoint(-26.5, 0, 1500);
+    pros::delay(100);
+    chassis.turnToPoint(-26.5, -15, 1000);
+    matchLoader.extend();
+    intake.move(-127);
+    toptakes(-60, 0);
+    chassis.moveToPoint(-26.5 , -14, 1500, {.maxSpeed = 100});
+    pros::delay(1700);
+    chassis.moveToPoint(-27.5, 11, 2000, {.forwards = false, .maxSpeed = 100});
+    toptakes(0, 0);
+    pros::delay(500);
+    toptakes(127,144);
+    pros::delay(1200);
+    matchLoader.retract();
+    intake.move(0);
+    toptakes(0,0);
+    chassis.moveToPoint(-27.5, 5, 800, {.minSpeed = 127});
+    pros::delay(500);
+    chassis.moveToPoint(-27.5, 10, 1000, {.forwards = false, .minSpeed = 127});
+}
+
+void rightAuton() {
+    chassis.setPose(0, 0, 0);
+    intake.move(-127);
+    chassis.moveToPose(6.5, 19, 20, 2000, {.maxSpeed = 100});
+    pros::delay(800);
+    matchLoader.extend();
+    chassis.moveToPoint(5.5, 17, 1000, {.forwards = false});
+    intake.move(0);
+    matchLoader.retract();
+    chassis.turnToHeading(-40, 1000);
+    chassis.moveToPoint(-3, 25.5, 2000);
+    pros::delay(1000);
+    intake.move(80);
+    pros::delay(800);
+    intake.move(0);
+    chassis.moveToPoint(26, 1, 2000, {.forwards = false});
+    chassis.turnToPoint(26, -15, 1000);
+    pros::delay(1000);
+    matchLoader.extend();
+    pros::delay(500);
+    intake.move(-127);
+    chassis.moveToPoint(26, -15, 1500, {.maxSpeed = 100});
+    pros::delay(1700);
+    chassis.moveToPoint(26, 17, 2000, {.forwards = false, .maxSpeed = 100});
+    pros::delay(800);
+    toptakes(127, 114);
+    pros::delay(2000);
+    toptakes(0, 0);
+    intake.move(0);
+    matchLoader.retract();
+    chassis.moveToPoint(26, 10, 800, {.minSpeed = 127});
+    pros::delay(500);
+    chassis.moveToPoint(26, 17, 1000, {.forwards = false, .minSpeed = 127});
 }
 
 /**
@@ -226,30 +290,13 @@ void skillsAuton() {
 void autonomous() {
     //robot starts with the back touching the front left corner of the parking space
     //robot starts facing forward, not at an angle
-    chassis.setPose(0, 0, 0);
-    intake.move(-127);
-    chassis.moveToPoint(-6, 18, 3000, {.maxSpeed = 40});
-    chassis.turnToHeading(-135, 1000);
-    intake.move(0);
-    chassis.moveToPoint(0, 23, 1500, {.forwards = false});
-    pros::delay(500);
-    intake.move(-127);
-    toptakes(-127, -114);
-    pros::delay(1500);
-    intake.move(0);
-    toptakes(0, 0);
-    matchLoader.extend();
-    chassis.moveToPoint(-28, 0, 2000);
-    pros::delay(100);
-    chassis.turnToPoint(-28, -15, 1000);
-    intake.move(-127);
-    chassis.moveToPoint(-28, -15, 3000);
-    pros::delay(3000);
-    chassis.moveToPoint(-28, 10, 3000, {.forwards = false, .maxSpeed = 100});
-    toptakes(-127,-144);
-    pros::delay(2000);
-    intake.move(0);
-    toptakes(0,0);
+    leftAuton();
+    // skillsAuton();
+    // aleftMotors.move(50);
+    // arightMotors.move(50);
+    // pros::delay(100);
+    // aleftMotors.move(0);
+    // arightMotors.move(0);
 }
 /**
  * Runs in driver control
@@ -260,36 +307,36 @@ void opcontrol() {
     // loop to continuously update motors
     while (true) {
         // get joystick positions
-        // int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        // int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-        // // move the chassis with curvature drive
-	    // aleftMotors.move(leftY);
-        // arightMotors.move(rightY);
-        int power = controller.get_analog( pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int turn = controller.get_analog( pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+        // move the chassis with curvature drive
+	    aleftMotors.move(leftY);
+        arightMotors.move(rightY);
+        // int power = controller.get_analog( pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        // int turn = controller.get_analog( pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-        int Left = power - turn;
-        int Right = power + turn;
+        // int Left = power - turn;
+        // int Right = power + turn;
 
-        leftMotors.move(Left);
-        rightMotors.move(Right);
+        // leftMotors.move(Left);
+        // rightMotors.move(Right);
 
         // Intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-            intake.move(127);
+            intake.move(-127);
         } 
         else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            intake.move(-127);
+            intake.move(127);
         } 
         else {
             intake.move(0);
         }
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            toptakes(-127, 114);
+            toptakes(127, 114);
         }
         else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            toptakes(127, -63);
+            toptakes(-127, -63);
         } 
         else {
             toptakes(0, 0);
