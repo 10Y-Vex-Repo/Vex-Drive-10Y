@@ -282,6 +282,7 @@ void skillsAuton() {
     chassis.moveToPoint(0, -20, 3000);
     // parked
     // around 56-60 seconds if it goes well
+    // around 80 points hopefully
 }
 
 void leftAuton() {
