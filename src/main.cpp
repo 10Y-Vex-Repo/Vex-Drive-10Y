@@ -365,12 +365,8 @@ void autonomous() {
     //robot starts with the back touching the front left corner of the parking space
     //robot starts facing forward, not at an angle
     leftAuton();
+    // rightAuton();
     // skillsAuton();
-    // aleftMotors.move(50);
-    // arightMotors.move(50);
-    // pros::delay(100);
-    // aleftMotors.move(0);
-    // arightMotors.move(0);
 }
 /**
  * Runs in driver control
