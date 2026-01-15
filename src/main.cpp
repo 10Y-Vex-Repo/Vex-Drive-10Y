@@ -49,14 +49,14 @@ lemlib::Drivetrain drivetrain(&aleftMotors, // left motor group
 );
 
 // lateral motion controller
-lemlib::ControllerSettings lateralController(10, // proportional gain (kP)
+lemlib::ControllerSettings lateralController(13, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              3, // derivative gain (kD)
+                                              2, // derivative gain (kD)
                                               0, // anti windup
-                                              0, // small error range, in inches
-                                              0, // small error range timeout, in milliseconds
-                                              0, // large error range, in inches
-                                              0, // large error range timeout, in milliseconds
+                                              1, // small error range, in inches
+                                              80, // small error range timeout, in milliseconds
+                                              2, // large error range, in inches
+                                              200, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
 );
 
@@ -148,76 +148,150 @@ void toptakes(int topTake, int midtake) {
 
 
 void skillsAuton() {
+    // 1010G route btw
+    // start on edge of parking zone
     chassis.setPose(0, 0, 0);
     intake.move(-127);
-    toptakes(-127, 0);
-    chassis.moveToPoint(-7, 20, 2000, {.maxSpeed = 40});
-    pros::delay(1400);
-    matchLoader.extend();
-    chassis.moveToPoint(-6.5, 19, 500);
-    chassis.turnToHeading(-135, 1000);
-    intake.move(0);
-    chassis.moveToPoint(2, 24.5, 1500, {.forwards = false});
-    pros::delay(500);
-    matchLoader.retract();
-    intake.move(-80);
-    toptakes(-127, -114);
-    pros::delay(3000);
-    intake.move(0);
-    toptakes(0, 0);
-    chassis.moveToPoint(-26.5, 0, 1500);
-    pros::delay(100);
-    chassis.turnToPoint(-26.5, -15, 1000);
-    matchLoader.extend();
-    intake.move(-127);
-    toptakes(-60, 0);
-    chassis.moveToPoint(-26.5 , -15, 1500, {.maxSpeed = 100});
-    pros::delay(3000);
-    chassis.moveToPoint(-27.5, 11, 2000, {.forwards = false, .maxSpeed = 100});
-    toptakes(0, 0);
-    pros::delay(500);
-    toptakes(127,144);
-    pros::delay(3000);
-    matchLoader.retract();
-    intake.move(0);
-    toptakes(0,0);
-    chassis.moveToPoint(-27.5, 7, 800, {.minSpeed = 127});
-    pros::delay(500);
-    chassis.moveToPoint(-27.5, 10, 1500, {.forwards = false, .minSpeed = 120});
-    pros::delay(500);
-    descore.extend();
-    chassis.moveToPoint(-27.5, 5, 1000);
-    chassis.swingToHeading(90, lemlib::DriveSide::LEFT, 1000);
-    chassis.turnToPoint(-10, -20, 1000);
-    intake.move(-127);
-    chassis.moveToPose(-10, -9, 90, 15000, {.minSpeed = 100});
-    chassis.moveToPoint(20, -13, 15000, {.minSpeed = 127});
-    // chassis.setPose(0, 0, 180);
-    // chassis.moveToPoint(0, 10, 2000, {.forwards = false});
-    // intake.move(0);
-    // toptakes(0, 0);
-    // chassis.moveToPoint(-10, 28, 2000, {.forwards = false});
-    // chassis.turnToHeading(-135, 1000);
-    // chassis.moveToPoint(-2, 34, 1500, {.forwards = false});
-    // intake.move(-80);
-    // toptakes(-80, -60);
-    // pros::delay(5000);
-    // chassis.moveToPoint(-10, 28, 2000);
-    // chassis.turnToPoint(0, 15, 1000);
-    // chassis.moveToPoint(0, 15, 2000);
-    // chassis.turnToPoint(0, 0, 1000);
-    // chassis.moveToPoint(0, 0, 3000);
+    toptakes(-100, 0);
+    chassis.moveToPoint(0, 20, 4000, {.maxSpeed = 80});
+    chassis.moveToPoint(0, 0, 2000);
+    chassis.moveToPoint(0, 20, 2000, {.maxSpeed = 50});
+    // end of parking balls
 
+    chassis.setPose(0, 0, 180);
+    intake.move(0);
+    toptakes(0, 0);
+    chassis.moveToPoint(-5, 21, 2000, {.forwards = false});
+    chassis.turnToHeading(-100, 1000);
+    toptakes(-100, 0);
+    intake.move(-127);
+    chassis.moveToPoint(-13, 20, 2000, {.maxSpeed = 80});
+    intake.move(0);
+    toptakes(0, 0);
+    // end of mid balls
+
+    chassis.moveToPoint(-3, 24.5, 2000, {.minSpeed = 70});
+    toptakes(-127, -70);
+    intake.move(-100);
+    pros::delay(5000);
+    toptakes(0, 0);
+    intake.move(0);
+    //end of mid goal scoring hope for 7 balls
+
+    chassis.moveToPoint(-32, -6, 2000);
+    chassis.turnToHeading(-180, 1000);
+    toptakes(-100, 0);
+    intake.move(-127);
+    chassis.moveToPoint(-32, -13, 1500, {.maxSpeed = 60});
+    pros::delay(3000);
+    intake.move(0);
+    toptakes(0, 0);
+    // matchloading end
+
+    chassis.moveToPoint(-40, 7, 2000, {.forwards = false});
+    chassis.turnToHeading(-180, 1000);
+    chassis.moveToPoint(-40, 50, 4000, {.forwards = false});
+    // arriving at other side
+
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPoint(-32, 50, 1500);
+    chassis.turnToHeading(0, 1000);
+    chassis.moveToPoint(-32, 42, 1500, {.forwards = false, .minSpeed = 100});
+    intake.move(-127);
+    toptakes(127, 114);
+    pros::delay(3000);
+    toptakes(0, 0);
+    intake.move(0);
+    // end of first long goal score (at other side)
+
+    chassis.moveToPoint(-32, 52, 1000, {.minSpeed = 80});
+    toptakes(-100, 0);
+    intake.move(-127);
+    chassis.moveToPoint(-32, 58, 1000, {.maxSpeed = 60});
+    pros::delay(3000);
+    intake.move(0);
+    toptakes(0, 0);
+    // end of second matchloading
+
+    chassis.moveToPoint(-32, 46, 1000, {.forwards = false, .minSpeed = 80});
+    chassis.moveToPoint(-32, 42, 1000, {.forwards = false, .maxSpeed = 60});
+    // slowing down so no accidental descores
+    intake.move(-127);
+    toptakes(127, 114);
+    pros::delay(3000);
+    intake.move(0);
+    toptakes(0, 0);
+    // end of second long goal scoring
+
+    // moving to right side
+    chassis.moveToPoint(-32, 50, 1500);
+    matchLoader.retract();
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPoint(32, 50, 4000);
+    // arrival at top right side
+    
+    chassis.turnToHeading(0, 1000);
+    matchLoader.extend();
+    intake.move(-127);
+    toptakes(-100, 0);
+    chassis.moveToPoint(32, 58, 2000, {.maxSpeed = 60});
+    pros::delay(3000);
+    intake.move(0);
+    toptakes(0, 0);
+    // end of 3rd matchloading
+    
+    chassis.moveToPoint(40, 48, 2000, {.forwards = false});
+    chassis.turnToHeading(0, 1000);
+    chassis.moveToPoint(40, 5, 4000, {.forwards = false});
+    // arrival at bottom right side
+
+    chassis.turnToHeading(-90, 1000);
+    chassis.moveToPoint(32, 5, 1500);
+    chassis.turnToHeading(-180, 1000);
+    chassis.moveToPoint(32, 11, 1500, {.forwards = false});
+    intake.move(-127);
+    toptakes(127, 114);
+    pros::delay(3000);
+    intake.move(0);
+    toptakes(0, 0);
+    // end of 3rd scoring at long goal bottom right
+
+    chassis.moveToPoint(32, -6, 1500, {.minSpeed = 80});
+    intake.move(-127);
+    toptakes(-100, 0);
+    chassis.moveToPoint(32, -13, 1000, {.maxSpeed = 60});
+    pros::delay(3000);
+    intake.move(0);
+    toptakes(0, 0);
+    // end of 4th matchloading bottom right
+
+    chassis.moveToPoint(32, 7, 1500, {.forwards = false, .minSpeed = 80});
+    chassis.moveToPoint(32, 11, 1000, {.forwards = false, .maxSpeed = 60});
+    intake.move(-127);
+    toptakes(127, 114);
+    pros::delay(3000);
+    intake.move(0);
+    toptakes(0, 0);
+    // end of 4th scoring bottom right
+
+    chassis.moveToPoint(32, 5, 1500);
+    chassis.turnToHeading(-90, 1000);
+    matchLoader.retract();
+    chassis.moveToPoint(0, 5, 3000);
+    chassis.turnToHeading(-180, 1000);
+    chassis.moveToPoint(0, -20, 3000);
+    // parked
+    // around 56-60 seconds if it goes well
 }
 
 void leftAuton() {
     chassis.setPose(0, 0, 0);
     intake.move(-127);
     toptakes(-127, 0);
-    chassis.moveToPoint(-8, 22, 2000, {.maxSpeed = 40});
+    chassis.moveToPoint(-8.5, 23, 2000, {.maxSpeed = 40});
     pros::delay(1400);
     matchLoader.extend();
-    chassis.moveToPoint(-6.5, 19, 500);
+    chassis.moveToPoint(-6.5, 19, 800);
     chassis.turnToHeading(-135, 1000);
     matchLoader.retract();
     intake.move(0);
@@ -225,7 +299,7 @@ void leftAuton() {
     pros::delay(500);
     intake.move(-80);
     toptakes(-127, -114);
-    pros::delay(1500);
+    pros::delay(2000);
     intake.move(0);
     toptakes(0, 0);
     chassis.moveToPoint(-26.5, 0, 1500);
@@ -234,13 +308,13 @@ void leftAuton() {
     matchLoader.extend();
     intake.move(-127);
     toptakes(-60, 0);
-    chassis.moveToPoint(-26.5 , -14, 1500, {.maxSpeed = 100});
+    chassis.moveToPoint(-26.5 , -14, 1500, {.maxSpeed = 60});
     pros::delay(1700);
     chassis.moveToPoint(-27.5, 11, 2000, {.forwards = false, .maxSpeed = 100});
     toptakes(0, 0);
     pros::delay(500);
     toptakes(127,144);
-    pros::delay(1200);
+    pros::delay(1600);
     matchLoader.retract();
     intake.move(0);
     toptakes(0,0);
@@ -307,19 +381,19 @@ void opcontrol() {
     // loop to continuously update motors
     while (true) {
         // get joystick positions
-        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-        // move the chassis with curvature drive
-	    aleftMotors.move(leftY);
-        arightMotors.move(rightY);
-        // int power = controller.get_analog( pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        // int turn = controller.get_analog( pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        // int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        // int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+        // // move the chassis with curvature drive
+	    // aleftMotors.move(leftY);
+        // arightMotors.move(rightY);
+        int power = controller.get_analog( pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int turn = controller.get_analog( pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-        // int Left = power - turn;
-        // int Right = power + turn;
+        int Left = power - turn;
+        int Right = power + turn;
 
-        // leftMotors.move(Left);
-        // rightMotors.move(Right);
+        leftMotors.move(Left);
+        rightMotors.move(Right);
 
         // Intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
@@ -355,10 +429,10 @@ void opcontrol() {
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             if (descore.is_extended() == true) {
                 descore.retract();
-                pros::delay(500);
+                pros::delay(200);
             } else {
                 descore.extend();
-                pros::delay(500);
+                pros::delay(200);
             }
         }
 
