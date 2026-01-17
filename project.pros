@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "left auton arcade",
+    "project_name": "skills auton",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -637,7 +637,7 @@
     "upload_options": {
       "description": "10Y",
       "icon": "robot",
-      "slot": 5
+      "slot": 4
     },
     "use_early_access": false
   }
