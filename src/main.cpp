@@ -172,7 +172,7 @@ void skillsAuton() {
     // end of mid balls
 
     chassis.turnToHeading(-140, 1000);
-    chassis.moveToPoint(-5, 27.5, 2000, {.forwards = false});
+    chassis.moveToPoint(-6, 26.5, 2000, {.forwards = false});
     toptakes(-127, -70);
     intake.move(-100);
     pros::delay(5000);
@@ -185,22 +185,23 @@ void skillsAuton() {
     chassis.turnToHeading(-180, 1000);
     toptakes(-100, 0);
     intake.move(-127);
-    chassis.moveToPoint(-35, -10, 1500, {.maxSpeed = 60});
+    chassis.moveToPoint(-35, -11, 1500, {.maxSpeed = 60});
     pros::delay(3000);
     intake.move(0);
     toptakes(0, 0);
+    pros::delay(100);
     // matchloading end
 
-    chassis.moveToPoint(-46, 8, 2000, {.forwards = false});
+    chassis.moveToPoint(-46, 7, 2000, {.forwards = false});
     chassis.turnToHeading(-180, 1000);
     matchLoader.retract();
     chassis.moveToPoint(-46, 65, 4000, {.forwards = false, .maxSpeed = 100});
     // arriving at other side
 
     chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(-34.5, 68, 1500);
+    chassis.moveToPoint(-36, 68, 1500);
     chassis.turnToHeading(0, 1000);
-    chassis.moveToPoint(-34.5, 60, 1500, {.forwards = false, .minSpeed = 100});
+    chassis.moveToPoint(-36, 60, 1500, {.forwards = false, .minSpeed = 100});
     intake.move(-127);
     toptakes(127, 114);
     pros::delay(3000);
@@ -209,17 +210,18 @@ void skillsAuton() {
     // end of first long goal score (at other side)
 
     matchLoader.extend();
-    chassis.moveToPoint(-34.5, 75, 1000, {.minSpeed = 80});
+    chassis.moveToPoint(-36, 75, 1000, {.minSpeed = 80});
     toptakes(-100, 0);
     intake.move(-127);
-    chassis.moveToPoint(-34.5, 80, 1000, {.maxSpeed = 60});
+    pros::delay(300);
+    chassis.moveToPoint(-36, 84, 1000, {.maxSpeed = 60});
     pros::delay(3000);
     intake.move(0);
     toptakes(0, 0);
     // end of second matchloading
 
-    chassis.moveToPoint(-34.5, 66, 1000, {.forwards = false, .minSpeed = 80});
-    chassis.moveToPoint(-34.5, 60, 1000, {.forwards = false, .maxSpeed = 60});
+    chassis.moveToPoint(-36, 66, 1000, {.forwards = false, .minSpeed = 80});
+    chassis.moveToPoint(-36, 59, 1000, {.forwards = false, .maxSpeed = 60});
     matchLoader.retract();
     // slowing down so no accidental descores
     intake.move(-127);
@@ -239,16 +241,16 @@ void skillsAuton() {
     matchLoader.extend();
     intake.move(-127);
     toptakes(-100, 0);
-    chassis.moveToPoint(35, 83, 2000, {.maxSpeed = 60});
+    chassis.moveToPoint(35.5, 84, 2000, {.maxSpeed = 60});
     pros::delay(3000);
     intake.move(0);
     toptakes(0, 0);
     // end of 3rd matchloading
     
-    chassis.moveToPoint(46.5, 65, 2000, {.forwards = false});
+    chassis.moveToPoint(45, 70, 2000, {.forwards = false});
     matchLoader.retract();
     chassis.turnToHeading(0, 1000);
-    chassis.moveToPoint(46.5, 5, 4000, {.forwards = false, .maxSpeed = 100});
+    // chassis.moveToPoint(46.5, 5, 4000, {.forwards = false, .maxSpeed = 100});
     // arrival at bottom right side
 
     // chassis.turnToHeading(-90, 1000);
@@ -375,6 +377,11 @@ void autonomous() {
     // rightAuton();
     skillsAuton();
     // chassis.setPose(0, 0, 180);
+    // aleftMotors.move(50);
+    // arightMotors.move(50);
+    // pros::delay(100);
+    // aleftMotors.move(0);
+    // arightMotors.move(0);
 }
 /**
  * Runs in driver control
@@ -390,14 +397,14 @@ void opcontrol() {
         // // move the chassis with curvature drive
 	    // aleftMotors.move(leftY);
         // arightMotors.move(rightY);
-        // int power = controller.get_analog( pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        // int turn = controller.get_analog( pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        int power = controller.get_analog( pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int turn = controller.get_analog( pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-        // int Left = power - turn;
-        // int Right = power + turn;
+        int Left = power - turn;
+        int Right = power + turn;
 
-        // leftMotors.move(Left);
-        // rightMotors.move(Right);
+        leftMotors.move(Left);
+        rightMotors.move(Right);
 
         // Intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
