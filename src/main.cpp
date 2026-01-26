@@ -180,12 +180,12 @@ void skillsAuton() {
     intake.move(0);
     //end of mid goal scoring hope for 7 balls
 
-    chassis.moveToPoint(-35, 1, 2000, {.maxSpeed = 100});
+    chassis.moveToPoint(-34, 1, 2000, {.maxSpeed = 100});
     matchLoader.extend();
     chassis.turnToHeading(-180, 1000);
     toptakes(-100, 0);
     intake.move(-127);
-    chassis.moveToPoint(-35.5, -11, 1500, {.maxSpeed = 60});
+    chassis.moveToPoint(-34.5, -11, 1500, {.maxSpeed = 60});
     pros::delay(3000);
     intake.move(0);
     toptakes(0, 0);
@@ -195,13 +195,13 @@ void skillsAuton() {
     chassis.moveToPoint(-46, 7, 2000, {.forwards = false});
     chassis.turnToHeading(-180, 1000);
     matchLoader.retract();
-    chassis.moveToPoint(-46, 65, 4000, {.forwards = false, .maxSpeed = 100});
+    chassis.moveToPoint(-46, 68, 4000, {.forwards = false, .maxSpeed = 100});
     // arriving at other side
 
     chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(-37.5, 68, 1500);
+    chassis.moveToPoint(-36, 68, 1500);
     chassis.turnToHeading(0, 1000);
-    chassis.moveToPoint(-37.5, 60, 1500, {.forwards = false, .minSpeed = 100});
+    chassis.moveToPoint(-36, 60, 1500, {.forwards = false, .minSpeed = 100});
     intake.move(-127);
     toptakes(127, 114);
     pros::delay(3000);
@@ -220,8 +220,8 @@ void skillsAuton() {
     toptakes(0, 0);
     // end of second matchloading
 
-    chassis.moveToPoint(-36.5, 66, 1000, {.forwards = false, .minSpeed = 80});
-    chassis.moveToPoint(-36.5, 59, 1000, {.forwards = false, .maxSpeed = 60});
+    chassis.moveToPoint(-36, 66, 1000, {.forwards = false, .minSpeed = 80});
+    chassis.moveToPoint(-36, 59, 1000, {.forwards = false, .maxSpeed = 60});
     matchLoader.retract();
     // slowing down so no accidental descores
     intake.move(-127);
@@ -241,7 +241,7 @@ void skillsAuton() {
     matchLoader.extend();
     intake.move(-127);
     toptakes(-100, 0);
-    chassis.moveToPoint(35.5, 84.5, 2000, {.maxSpeed = 60});
+    chassis.moveToPoint(34, 84.5, 2000, {.maxSpeed = 60});
     pros::delay(3000);
     intake.move(0);
     toptakes(0, 0);
@@ -259,12 +259,12 @@ void skillsAuton() {
     chassis.moveToPoint(36, 11, 1500, {.forwards = false});
     intake.move(-127);
     toptakes(127, 114);
+    matchLoader.extend();
     pros::delay(3000);
     intake.move(0);
     toptakes(0, 0);
     // end of 3rd scoring at long goal bottom right
 
-    matchLoader.extend();
     chassis.moveToPoint(35.5, -6, 1500, {.minSpeed = 80});
     intake.move(-127);
     toptakes(-100, 0);
