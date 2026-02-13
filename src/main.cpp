@@ -180,14 +180,15 @@ void skillsAuton() {
     chassis.turnToHeading(-100, 1000);
     toptakes(-100, 0);
     intake.move(-127);
-    chassis.moveToPoint(-11.5, 22, 2000, {.maxSpeed = 80});
+    // chassis.moveToPoint(-11.5, 22, 2000, {.maxSpeed = 80});
+    chassis.moveToPoint(-13, 20, 2000, {.maxSpeed = 80});
     pros::delay(1000);
     intake.move(0);
     toptakes(0, 0);
     // end of mid balls
 
     chassis.turnToHeading(-135, 1000);
-    chassis.moveToPoint(-9, 27, 2000, {.forwards = false});
+    chassis.moveToPoint(-8.5, 27.5, 2000, {.forwards = false});
     pros::delay(300);
     toptakes(-127, -70);
     intake.move(-100);
@@ -196,32 +197,31 @@ void skillsAuton() {
     intake.move(0);
     //end of mid goal scoring hope for 7 balls
 
-    chassis.moveToPoint(-34.5, -2, 2000, {.maxSpeed = 100});
+    chassis.moveToPoint(-34, 0, 2000, {.maxSpeed = 100});
     matchLoader.extend();
     chassis.turnToHeading(-175, 1000);
     toptakes(-100, 0);
     intake.move(-127);
-    chassis.moveToPoint(-35.5, -7, 1000, {.maxSpeed = 40});
-    chassis.moveToPoint(-35.5, -11.5, 2000, {.maxSpeed = 20, .minSpeed = 20}); 
+    chassis.moveToPoint(-34.5, -7, 1000, {.maxSpeed = 40});
+    chassis.moveToPoint(-34.5, -11.5, 2000, {.maxSpeed = 20, .minSpeed = 20}); 
     // matchLoad(3);
     pros::delay(2000);  
-    intake.move(0);
-    toptakes(0, 0);
-    pros::delay(100);
     // matchloading end
 
-    chassis.moveToPoint(-35.5, -7, 1000, {.forwards = false});
+    chassis.moveToPoint(-35, -3, 1000, {.forwards = false});
     chassis.turnToHeading(150, 1000);
-    chassis.moveToPoint(-45, 10, 2000, {.forwards = false});
+    chassis.moveToPoint(-44, 10, 2000, {.forwards = false});
     chassis.turnToHeading(-185, 1000);
+    intake.move(0);
+    toptakes(0, 0);
     matchLoader.retract();
-    chassis.moveToPoint(-45, 69, 4000, {.forwards = false, .maxSpeed = 100});
+    chassis.moveToPoint(-44, 69, 4000, {.forwards = false, .maxSpeed = 100});
     // arriving at other side
 
     chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(-34.5, 70, 1500);
+    chassis.moveToPoint(-34, 70, 1500);
     chassis.turnToHeading(0, 1000);
-    chassis.moveToPoint(-34, 63, 1500, {.forwards = false, .minSpeed = 100});
+    chassis.moveToPoint(-33.6, 60, 1500, {.forwards = false, .maxSpeed = 80});
     intake.move(-127);
     toptakes(127, 114);
     matchLoader.extend();
@@ -230,19 +230,20 @@ void skillsAuton() {
     intake.move(0);
     // end of first long goal score (at other side)
 
-    chassis.moveToPoint(-33.8, 76, 1000, {.minSpeed = 80});
+    chassis.moveToPoint(-33, 76, 1000, {.minSpeed = 35});
     toptakes(-100, 0);
     intake.move(-127);
-    pros::delay(500);
-    chassis.moveToPoint(-33.8, 84, 3000, {.maxSpeed = 20, .minSpeed = 20});
-    pros::delay(2000);
+    pros::delay(200);
+    chassis.moveToPoint(-33, 87, 4000, {.maxSpeed = 20, .minSpeed = 20});
+    pros::delay(2400);
     intake.move(0);
     toptakes(0, 0);
     // end of second matchloading
 
-    chassis.moveToPoint(-34, 70, 1000, {.forwards = false, .minSpeed = 80});
-    chassis.moveToPoint(-34, 63, 1000, {.forwards = false, .maxSpeed = 60});
+    chassis.moveToPoint(-33.6, 70, 1000, {.forwards = false, .minSpeed = 80});
+    chassis.moveToPoint(-33.6, 60, 1000, {.forwards = false, .maxSpeed = 60});
     matchLoader.retract();
+    pros::delay(200);
     // slowing down so no accidental descores
     intake.move(-127);
     toptakes(127, 114);
@@ -251,20 +252,21 @@ void skillsAuton() {
     toptakes(0, 0);
     // end of second long goal scoring
 
-    // // moving to right side
-    // chassis.moveToPoint(-34, 68, 1500);
-    // chassis.turnToHeading(90, 1000);
-    // chassis.moveToPoint(35, 68, 4000);
-    // // arrival at top right side
+    // moving to right side
+    chassis.moveToPoint(-34, 70, 1500);
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPoint(38, 70, 4000);
+    // arrival at top right side
     
-    // chassis.turnToHeading(0, 1000);
-    // matchLoader.extend();
-    // intake.move(-127);
-    // toptakes(-100, 0);
-    // chassis.moveToPoint(35.5, 84.5, 2000, {.maxSpeed = 30});
-    // pros::delay(3000);
-    // intake.move(0);
-    // toptakes(0, 0);
+    chassis.turnToHeading(0, 1000);
+    matchLoader.extend();
+    intake.move(-127);
+    toptakes(-100, 0);
+    chassis.moveToPoint(37, 76, 5000, {.maxSpeed = 40});
+    chassis.moveToPoint(37, 84.5, 5000, {.maxSpeed = 20});
+    pros::delay(3000);
+    intake.move(0);
+    toptakes(0, 0);
     // end of 3rd matchloading
     
     // chassis.moveToPoint(46, 70, 2000, {.forwards = false});
