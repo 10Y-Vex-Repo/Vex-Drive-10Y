@@ -43,7 +43,7 @@ pros::Imu imu(10);
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&aleftMotors, // left motor group
                               &arightMotors, // right motor group
-                              11, // 11 inch track width
+                              13, // 11 inch track width
                               lemlib::Omniwheel::NEW_275, // using new 4" omnis
                               450, // drivetrain rpm is 360
                               2 // horizontal drift is 2. If we had traction wheels, it would have been 8
