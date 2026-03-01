@@ -17,7 +17,7 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 // motors
 pros::Motor intake(-4, pros::MotorGearset::blue);
 pros::Motor toptake2(8, pros::MotorGearset::blue);
-pros::Motor toptake(-5, pros::MotorGearset::blue);
+pros::Motor intake2(-5, pros::MotorGearset::blue);
 
 // pnuematics
 pros::adi::Pneumatics descore('A', false);
@@ -140,8 +140,13 @@ void disabled() {}
  */
 void competition_initialize() {}
 
+void intakes(int intakeS, int intake2S) {
+    intake.move(intakeS);
+    intake2.move(intake2S);
+}
+
 void toptakes(int topTake, int midtake) {
-    toptake.move(topTake);
+    // toptake.move(topTake);
     toptake2.move(midtake);
 }
 // get a path used for pure pursuit
@@ -466,8 +471,8 @@ void autonomous() {
     //robot starts facing forward, not at an angle
     // leftAuton();
     // rightAuton();
-    soloAWP();
-    // skillsAuton();
+    // soloAWP();
+    skillsAuton();
     // aleftMotors.move(50);
     // arightMotors.move(50);
     // pros::delay(100);
@@ -499,13 +504,22 @@ void opcontrol() {
 
         // Intake
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-            intake.move(-127);
+            intakes(127, 127);
+            if (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && !controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+                toptake2.move(127);
+            }
         } 
         else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            intake.move(127);
+            intakes(-127, -127);
+            if (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && !controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+                toptake2.move(-127);
+            }
         } 
         else {
-            intake.move(0);
+            intakes(0, 0);
+            if (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && !controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+                toptake2.move(0);
+            }
         }
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
@@ -514,7 +528,7 @@ void opcontrol() {
         else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
             toptakes(-127, -63);
         } 
-        else {
+        else if (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2) && !controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
             toptakes(0, 0);
         }
 
