@@ -5,6 +5,7 @@
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/motors.hpp"
+#include "pros/rotation.hpp"
 #include "pros/rtos.h"
 #include "pros/rtos.hpp"
 #include <algorithm>
@@ -14,9 +15,9 @@
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motors
-pros::Motor intake(20, pros::MotorGearset::blue);
-pros::Motor toptake(11, pros::MotorGearset::blue);
-pros::Motor toptake2(19, pros::MotorGearset::blue);
+pros::Motor intake(-4, pros::MotorGearset::blue);
+pros::Motor toptake2(8, pros::MotorGearset::blue);
+pros::Motor toptake(-5, pros::MotorGearset::blue);
 
 // pnuematics
 pros::adi::Pneumatics descore('A', false);
@@ -29,16 +30,16 @@ pros::MotorGroup aleftMotors({-15, -13, -14}, pros::MotorGearset::blue);
 pros::MotorGroup arightMotors({17, 18, 16}, pros::MotorGearset::blue);
 
 // sensor
-pros::Imu imu(10);
+pros::Imu imu(7);
 
 // tracking wheels
 // horizontal tracking wheel encoder. Rotation sensor, port 20, not reversed
 // vertical tracking wheel encoder. Rotation sensor, port 11, reversed
-//pros::Rotation verticalEnc(1);
+pros::Rotation verticalEnc(19);
 // horizontal tracking wheel. 2.75" diameter, 5.75" offset, back of the robot (negative)
 //lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_275, -5.75);
 // vertical tracking wheel. 2.75" diameter, 2.5" offset, left of the robot (negative)
-//lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_275, -2.5);
+lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_2, -1);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&aleftMotors, // left motor group
@@ -74,7 +75,7 @@ lemlib::ControllerSettings angularController(2, // proportional gain (kP)
 );
 
 // sensors for odometry
-lemlib::OdomSensors sensors(nullptr, // vertical tracking wheel
+lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
                             nullptr, // vertical tracking wheel 2, set to nullptr as we don't have a second one
                             nullptr, // horizontal tracking wheel
                             nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
