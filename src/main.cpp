@@ -237,7 +237,7 @@ void skillsAuton2() {
     chassis.moveToPoint(1.5, 101.5, 1500, {.earlyExitRange = 1});
     // hood down
     chassis.turnToHeading(0, 1000, {.earlyExitRange = 3});
-    chassis.moveToPoint(1.5, 119, 1500);
+    chassis.moveToPoint(1.5, 119, 2000);
     chassis.moveToPoint(1.5, 122.5, 1000);
     pros::delay(1000);
     // second park balls
