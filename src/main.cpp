@@ -22,6 +22,8 @@ pros::Motor intake2(-5, pros::MotorGearset::blue);
 // pnuematics
 pros::adi::Pneumatics descore('A', false);
 pros::adi::Pneumatics matchLoader('F', false);
+pros::adi::Pneumatics hood('B', false);
+
 
 // motor groups
 pros::MotorGroup leftMotors({15, 13, 14}, pros::MotorGearset::blue);
@@ -181,15 +183,16 @@ void skillsAuton2() {
     // chassis.moveToPoint(0, -6, 1000);
     // chassis.moveToPoint(0, -11, 1000);
     // pros::delay(1000);
-    // odom up
+    descore.extend();
     intakes(127, 127, 127);
     chassis.tank(60, 60);
     pros::delay(2000);
     chassis.tank(-60, -60);
     pros::delay(1000);
     chassis.tank(15, 15);
+    descore.retract();
     pros::delay(1000);
-    // odom down
+    chassis.tank(0, 0);
     // park zone balls
 
     chassis.setPose(0, 0, 180);
@@ -227,35 +230,35 @@ void skillsAuton2() {
     chassis.moveToPoint(-47, 95.5, 1500, {.forwards = false, .earlyExitRange = 1});  
     chassis.turnToHeading(0, 1000, {.earlyExitRange = 3});
     chassis.moveToPoint(-46.5, 75.5, 1500, {.forwards = false});
-    // hood up
+    hood.extend();
     pros::delay(2000);
     matchLoader.extend();
     // 1st long goal scoring
 
     chassis.moveToPoint(-46, 112, 1500);
-    // hood down
+    hood.retract();
     pros::delay(2000);
     // 2nd matchloading
 
     chassis.moveToPoint(-46.5, 75.5, 1500, {.forwards = false});
-    // hood up
+    hood.extend();
     pros::delay(2000);
     // 2nd long goal scoring
 
     chassis.turnToHeading(90, 1000, {.earlyExitRange = 5});
     matchLoader.retract();
     chassis.moveToPoint(1, 91.5, 1500, {.earlyExitRange = 1});
-    // hood down
+    hood.retract();
     chassis.turnToHeading(0, 1000, {.earlyExitRange = 3});
-    // odom up
+    descore.extend();
     chassis.tank(80, 80);
     pros::delay(2000);
     chassis.tank(-60, -60);
     pros::delay(1000);
     chassis.tank(15, 15);
+    descore.retract();
     pros::delay(1000);
     chassis.tank(0, 0);
-    // odom down
     chassis.setPose(0, 95, chassis.getPose().theta);
     // chassis.moveToPoint(1.5, 119, 2000);
     // chassis.moveToPoint(1.5, 122.5, 1000);
@@ -291,25 +294,25 @@ void skillsAuton2() {
     chassis.moveToPoint(47, 1, 1500, {.forwards = false, .earlyExitRange = 1});
     chassis.turnToHeading(180, 1000, {.earlyExitRange = 3});
     chassis.moveToPoint(47.5, 19.5, 1000, {.forwards = false});
-    // hood up
+    hood.extend();
     pros::delay(2000);
     matchLoader.extend();
     // 3rd long goal scoring
 
     chassis.moveToPoint(47, -17.5, 1500);
-    // hood down
+    hood.retract();
     pros::delay(2000);
     // 4th matchloading
 
     chassis.moveToPoint(47.5, 19.5, 2000, {.forwards = false});
-    // hood up
+    hood.extend();
     pros::delay(2000);
     // 4th long goal scoring
 
     chassis.moveToPoint(25, 2, 2000, {.earlyExitRange = 3});
     chassis.moveToPoint(16.5, -15.5, 1500, {.earlyExitRange = 3});
     chassis.turnToHeading(-90, 1000, {.earlyExitRange = 5});
-    // odom up
+    descore.extend();
     chassis.tank(60, 60);
     pros::delay(1500);
     chassis.tank(0, 0);
