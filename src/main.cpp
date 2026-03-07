@@ -20,9 +20,9 @@ pros::Motor toptake(8, pros::MotorGearset::blue);
 pros::Motor intake2(-5, pros::MotorGearset::blue);
 
 // pnuematics
-pros::adi::Pneumatics descore('A', false);
+pros::adi::Pneumatics descore('B', false);
 pros::adi::Pneumatics matchLoader('F', false);
-pros::adi::Pneumatics hood('B', false);
+pros::adi::Pneumatics hood('D', false);
 
 
 // motor groups
