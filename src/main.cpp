@@ -668,7 +668,7 @@ void opcontrol() {
             intakes(0, 0, 0);
         }
 
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
             if (matchLoader.is_extended() == true) {
                 matchLoader.retract();
                 pros::delay(500);
@@ -678,7 +678,7 @@ void opcontrol() {
             }
         }
 
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
             if (descore.is_extended() == true) {
                 descore.retract();
                 pros::delay(200);
