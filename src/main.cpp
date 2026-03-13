@@ -198,6 +198,7 @@ void skillsAuton2() {
     // chassis.moveToPoint(0, -10, 800, {.minSpeed = 120, .earlyExitRange = 0.2});
     // pros::delay(400);
 
+    // *---------------------------------*
     // START RESET (TUNE TILL 1ST RESET)
 
     // chassis.setPose(0, -10, 180);
@@ -249,7 +250,7 @@ void skillsAuton2() {
     // *------------------------------*
     // 1ST RESET (TUNE UNTIL 2ND RESET)
 
-    // chassis.setPose(-44, 60, 0);
+    // chassis.setPose(-44, 60, chassis.getPose().theta);
     // matchLoader.extend();
     // // 1st long goal scoring
 
@@ -322,7 +323,7 @@ void skillsAuton2() {
     // *-----------------------------*
     // 3RD RESET (TUNE UNTIL END)
 
-    // chassis.setPose(-44, 60, 0);
+    // chassis.setPose(-44, 60, chassis.getPose().theta);
     // matchLoader.extend();
     // // 3rd long goal scoring
 
