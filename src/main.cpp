@@ -184,6 +184,9 @@ void align() {
 
 void skillsAuton2() {
     //experimenting with early exit range to motion change so faster
+
+    // START (ADD LATER)
+
     // chassis.setPose(0, 0, 180);
     intakes(127, 127, 127);
     // chassis.moveToPoint(0, -1.5, 2000, {.minSpeed = 120});
@@ -194,6 +197,9 @@ void skillsAuton2() {
     // parkClear(2);
     // chassis.moveToPoint(0, -10, 800, {.minSpeed = 120, .earlyExitRange = 0.2});
     // pros::delay(400);
+
+    // START RESET (TUNE TILL 1ST RESET)
+
     // chassis.setPose(0, -10, 180);
     // // park zone balls
 
@@ -239,6 +245,10 @@ void skillsAuton2() {
     // chassis.moveToPoint(-44, 60, 2000, {.forwards = false});
     // hood.extend();
     // pros::delay(2000);
+
+    // *------------------------------*
+    // 1ST RESET (TUNE UNTIL 2ND RESET)
+
     // chassis.setPose(-44, 60, 0);
     // matchLoader.extend();
     // // 1st long goal scoring
@@ -266,24 +276,29 @@ void skillsAuton2() {
     // chassis.cancelMotion();
     // parkClear(2);
     // pros::delay(500);
+
+    // *---------------------------------*
+    // 2ND RESET (TUNE UNTIL 3RD RESET)
+
     chassis.setPose(0, -10, 180);
     // second park balls
 
-    chassis.moveToPoint(0, -2, 1000, {.forwards = false});
+    chassis.moveToPoint(0, -1, 1000, {.forwards = false});
+    pros::delay(1000);
     align();
     chassis.setPose(0, -5.5, chassis.getPose().theta);
-    // chassis.turnToHeading(135, 1000, {.earlyExitRange = 5});
-    // chassis.moveToPoint(27.5, 78, 1500, {.earlyExitRange = 2});
-    // matchLoader.extend();
-    // chassis.moveToPoint(24, 81, 1000, {.earlyExitRange = 2});
-    // // second mid balls
+    chassis.moveToPoint(0, 0, 1000, {.forwards = false, .maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 2});
+    chassis.turnToHeading(-55, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 5});
+    chassis.moveToPoint(-23, 15, 1500, {.maxSpeed = 80, .minSpeed = 2, .earlyExitRange = 2});
+    matchLoader.extend();
+    // second mid balls
     
-    // chassis.turnToHeading(45, 1000, {.earlyExitRange = 5});
-    // chassis.moveToPoint(11.5, 69, 1500);
-    // intakes(80, 80, -60);
-    // pros::delay(3000);
-    // intakes(127, 127, 127);
-    // // top mid goal scoring
+    chassis.turnToHeading(-130, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 5});
+    chassis.moveToPoint(-6, 30, 1500, {.forwards = false, .maxSpeed = 80});
+    intakes(80, 80, -60);
+    pros::delay(3000);
+    intakes(127, 127, 127);
+    // top mid goal scoring
 
     // chassis.moveToPoint(-46.5, -8, 1500, {.maxSpeed = 80, .minSpeed = 4, .earlyExitRange = 0.5});
     // chassis.turnToHeading(-180, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
@@ -303,6 +318,10 @@ void skillsAuton2() {
     // chassis.moveToPoint(-44, 60, 2000, {.forwards = false});
     // hood.extend();
     // pros::delay(2000);
+
+    // *-----------------------------*
+    // 3RD RESET (TUNE UNTIL END)
+
     // chassis.setPose(-44, 60, 0);
     // matchLoader.extend();
     // // 3rd long goal scoring
