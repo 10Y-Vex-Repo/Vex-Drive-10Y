@@ -208,6 +208,7 @@ void skillsAuton2() {
     chassis.moveToPoint(0, -10, 800, {.minSpeed = 120, .earlyExitRange = 0.2});
     pros::delay(400);
 
+    // *---------------------------------*
     // START RESET (TUNE TILL 1ST RESET)
 
     chassis.setPose(0, -10, 180);
