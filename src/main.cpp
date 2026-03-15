@@ -34,6 +34,9 @@ pros::MotorGroup arightMotors({17, 18, 16}, pros::MotorGearset::blue);
 // sensor
 pros::Imu imu(7);
 
+pros::Task* autonTask = nullptr;
+
+
 // tracking wheels
 // horizontal tracking wheel encoder. Rotation sensor, port 20, not reversed
 // vertical tracking wheel encoder. Rotation sensor, port 11, reversed
@@ -187,50 +190,71 @@ void parkClear(int n) {
 
 void align() {
     chassis.cancelMotion();
-    chassis.tank(60, 65);
+    chassis.tank(70, 75);
     pros::delay(1000);
     chassis.tank(0, 0);
 }
+
+void align2() {
+    chassis.cancelMotion();
+    chassis.tank(70, 70);
+    pros::delay(250);
+    chassis.tank(0, 0);
+}
+
+void stop() {
+    if (autonTask != nullptr) {
+        autonTask->remove();
+        delete autonTask;
+        autonTask = nullptr;
+    }
+
+    chassis.cancelMotion();
+    aleftMotors.move(0);
+    arightMotors.move(0);
+}
+
 
 void skillsAuton2() {
     //experimenting with early exit range to motion change so faster
 
     // START (ADD LATER)
 
-    chassis.setPose(0, 0, 180);
+    // chassis.setPose(0, 0, 180);
     intakes(127, 127, 127);
-    chassis.moveToPoint(0, -1.5, 2000, {.minSpeed = 120});
-    pros::delay(1000);
-    chassis.moveToPoint(0, -6, 1000, {.minSpeed = 120, .earlyExitRange = 0.2});
-    pros::delay(300);
-    chassis.cancelMotion();
-    parkClear(2);
-    chassis.moveToPoint(0, -10, 800, {.minSpeed = 120, .earlyExitRange = 0.2});
-    pros::delay(400);
+    // chassis.moveToPoint(0, -1.5, 2000, {.minSpeed = 120});
+    // pros::delay(1000);
+    // chassis.moveToPoint(0, -6, 1000, {.minSpeed = 120, .earlyExitRange = 0.2});
+    // pros::delay(300);
+    // chassis.cancelMotion();
+    // parkClear(2);
+    // chassis.moveToPoint(0, -10, 800, {.minSpeed = 120, .earlyExitRange = 0.2});
+    // pros::delay(400);
 
     // *---------------------------------*
     // START RESET (TUNE TILL 1ST RESET)
 
-    chassis.setPose(0, -10, 180);
+    // chassis.setPose(0, -10, 180);
     // park zone balls
 
-    chassis.moveToPoint(0, -1, 1000, {.forwards = false, .earlyExitRange = 1});
-    pros::delay(1000);
-    align();
-    chassis.setPose(0, -5.5, chassis.getPose().theta);
-    chassis.moveToPoint(0, 0, 1000, {.maxSpeed = 80, .minSpeed = 2, .earlyExitRange = 2});
-    chassis.turnToHeading(90, 1500, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
-    chassis.moveToPoint(20, 12, 2000, {.maxSpeed = 80, .minSpeed = 2, .earlyExitRange = 1});
-    pros::delay(500);
-    intakes(0, 0, 0);
+    // chassis.moveToPoint(0, -1, 1000, {.forwards = false, .earlyExitRange = 1});
+    // pros::delay(1000);
+    // hood.extend();
+    align2();
+    chassis.setPose(0, -5.5, 180);
+    chassis.moveToPoint(0, 0, 1000, {.forwards = false, .maxSpeed = 80, .minSpeed = 2, .earlyExitRange = 2});
+    // chassis.turnToHeading(90, 1500, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
+    // chassis.moveToPoint(20, 12, 2000, {.maxSpeed = 80, .minSpeed = 2, .earlyExitRange = 1});
+    // pros::delay(500);
+    // intakes(0, 0, 0);
     // right mid goal balls
 
-    chassis.turnToHeading(-40, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
-    pros::delay(400);
-    intakes(127, 127, 127);
-    chassis.moveToPoint(9.75, 32, 1500, {.maxSpeed = 50});
-    pros::delay(900);
-    intakes(-60, -100, -30);
+    // chassis.turnToHeading(-40, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
+    // pros::delay(400);
+    // intakes(127, 127, 127);
+    // chassis.moveToPoint(9.75, 32, 1500, {.maxSpeed = 50});
+    // pros::delay(900);
+    // intakes(-60, -100, -30);
     // pros::delay(1300);
     // intakes(-40, -100, -30);
     // pros::delay(1700);
@@ -239,142 +263,162 @@ void skillsAuton2() {
 
     // chassis.moveToPoint(15, 24, 1000, {.forwards = false, .maxSpeed = 90, .minSpeed = 80, .earlyExitRange = 2});
     // intakes(127, 127, 127);
-    // chassis.turnToHeading(-80, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 5});
-    // chassis.moveToPoint(-23, 18, 2000, {.minSpeed = 80, .earlyExitRange = 3});
-    // pros::delay(700);
-    // hood.retract();
-    // // left mid goal balls
+    chassis.turnToHeading(-55, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 5});
+    chassis.moveToPoint(-26, 21, 2000, {.maxSpeed = 90, .earlyExitRange = 3});
+    pros::delay(500);
+    matchLoader.extend();
+    // left mid goal balls
     
-    // chassis.turnToHeading(-135, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
-    // matchLoader.extend();
-    // chassis.moveToPoint(-47, -8, 1500, {.maxSpeed = 90, .minSpeed = 4, .earlyExitRange = 0.5});
-    // chassis.turnToHeading(-180, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
-    // chassis.moveToPoint(-48, -20.5, 1200, {.maxSpeed = 40});
-    // pros::delay(2000);
-    // // first matchload
+    chassis.turnToHeading(-135, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
+    chassis.moveToPoint(-46, 0, 1500, {.maxSpeed = 100, .minSpeed = 4, .earlyExitRange = 0.5});
+    chassis.turnToHeading(-170, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
+    chassis.moveToPoint(-47, 12, 1000, {.forwards = false, .maxSpeed = 120, .minSpeed = 100});
+    pros::delay(600);
+    hood.extend();
+    pros::delay(1000);
+    chassis.moveToPoint(-49.5, -8, 1200, {.maxSpeed = 110, .minSpeed = 80, .earlyExitRange = 3});
+    chassis.moveToPoint(-49.5, -21, 1200, {.maxSpeed = 40, .minSpeed = 5});
+    hood.retract();
+    pros::delay(2000);
+    // first matchload
 
-    // chassis.moveToPoint(-62, 10, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
-    // chassis.turnToHeading(-180, 1000);
-    // chassis.moveToPoint(-65, 65, 3000, {.forwards = false, .maxSpeed = 100, .minSpeed = 100, .earlyExitRange = 3});
-    // matchLoader.retract();
-    // // arrive at other side
+    chassis.moveToPoint(-64, 10, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
+    chassis.turnToHeading(-180, 1000);
+    chassis.moveToPoint(-64, 60, 3000, {.forwards = false, .maxSpeed = 120, .minSpeed = 115});
+    matchLoader.retract();
+    // arrive at other side
     
-    // chassis.turnToHeading(-125, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 2});
-    // chassis.moveToPoint(-55, 80, 2000, {.forwards = false, .maxSpeed = 80, .earlyExitRange = 0.3});  
-    // chassis.turnToHeading(-10, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
-    // chassis.moveToPoint(-49.5, 60, 2000, {.forwards = false});
-    // pros::delay(400);
-    // hood.extend();
-    // pros::delay(2500);
+    chassis.turnToHeading(-125, 1000, {.maxSpeed = 80, .minSpeed = 2, .earlyExitRange = 2});
+    chassis.moveToPoint(-46, 80, 2000, {.forwards = false, .maxSpeed = 100, .earlyExitRange = 0.3});  
+    chassis.turnToHeading(-30, 1000, {.maxSpeed = 80, .minSpeed = 2, .earlyExitRange = 3});
+    chassis.moveToPoint(-43, 60, 800, {.forwards = false, .minSpeed = 100, .earlyExitRange = 1});
+    matchLoader.extend();
+    pros::delay(600);
+    hood.extend();
+    pros::delay(250);
+    chassis.tank(-127, -127);
+    pros::delay(1600);
+    chassis.tank(0, 0);
+    pros::delay(500);
 
-    // // *------------------------------*
-    // // 1ST RESET (TUNE UNTIL 2ND RESET)
+    // *------------------------------*
+    // 1ST RESET (TUNE UNTIL 2ND RESET)
 
-    // chassis.setPose(-44, 60, chassis.getPose().theta);
-    // matchLoader.extend();
-    // // 1st long goal scoring
+    chassis.setPose(-44, 60, chassis.getPose().theta);
+    // 1st long goal scoring
 
-    // chassis.moveToPoint(-43.5, 85, 2000, {.maxSpeed = 60, .minSpeed = 2, .earlyExitRange = 1});
-    // chassis.moveToPoint(-43.5, 91, 1500, {.maxSpeed = 30});
-    // hood.retract();
-    // pros::delay(2000);
-    // // 2nd matchloading
+    chassis.moveToPoint(-43.5, 85, 2000, {.maxSpeed = 60, .minSpeed = 2, .earlyExitRange = 1});
+    chassis.moveToPoint(-43.5, 91, 1500, {.maxSpeed = 30});
+    hood.retract();
+    pros::delay(2000);
+    // 2nd matchloading
 
-    // chassis.moveToPoint(-44, 58, 1500, {.forwards = false, .maxSpeed = 70});
-    // pros::delay(800);
-    // hood.extend();
-    // pros::delay(1700);
-    // // 2nd long goal scoring
+    chassis.moveToPoint(-44, 58, 1500, {.forwards = false, .maxSpeed = 70});
+    pros::delay(800);
+    hood.extend();
+    pros::delay(1700);
+    // 2nd long goal scoring
 
-    // chassis.turnToHeading(70, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 5});
-    // matchLoader.retract();
-    // chassis.moveToPoint(2.5, 74, 1500, {.maxSpeed = 80, .earlyExitRange = 3});
-    // chassis.turnToHeading(8, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
-    // chassis.moveToPoint(3, 92.5, 1500, {.maxSpeed = 60, .earlyExitRange = 1});
-    // hood.retract();
-    // pros::delay(1500);
-    // chassis.moveToPoint(3, 98, 1000, {.minSpeed = 80});
-    // pros::delay(800);
-    // chassis.cancelMotion();
-    // parkClear(2);
-    // chassis.moveToPoint(0, 102, 800, {.minSpeed = 120, .earlyExitRange = 0.2});
-    // pros::delay(400);
-    // // *---------------------------------*
-    // // 2ND RESET (TUNE UNTIL 3RD RESET)
+    chassis.turnToHeading(70, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 5});
+    matchLoader.retract();
+    chassis.moveToPoint(2.5, 74, 1500, {.maxSpeed = 80, .earlyExitRange = 3});
+    chassis.turnToHeading(8, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
+    chassis.moveToPoint(3.5, 93, 1500, {.maxSpeed = 60, .earlyExitRange = 1});
+    hood.retract();
+    pros::delay(1500);
+    chassis.moveToPoint(3.5, 98, 1000, {.minSpeed = 80});
+    pros::delay(800);
+    chassis.cancelMotion();
+    parkClear(2);
+    chassis.moveToPoint(0, 102, 800, {.minSpeed = 120, .earlyExitRange = 0.2});
+    pros::delay(400);
+    // *---------------------------------*
+    // 2ND RESET (TUNE UNTIL 3RD RESET)
 
-    // chassis.setPose(0, -10, 180);
-    // // second park balls
+    chassis.setPose(0, -10, 180);
+    // second park balls
 
-    // chassis.moveToPoint(0, -1, 1000, {.forwards = false});
-    // pros::delay(1000);
-    // align();
-    // chassis.setPose(0, -5.5, chassis.getPose().theta);
-    // chassis.moveToPoint(0, 0, 1000, {.forwards = false, .maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 2});
-    // chassis.turnToHeading(-55, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 5});
-    // chassis.moveToPoint(-18, 16, 1500, {.maxSpeed = 80, .minSpeed = 2, .earlyExitRange = 2});
-    // chassis.moveToPoint(-21.5, 18.5, 1500, { .maxSpeed = 50, .earlyExitRange = 0.5});
-    // pros::delay(100);
-    // intakes(0, 0, 0);
-    // // second mid balls
+    chassis.moveToPoint(0, -1, 1000, {.forwards = false});
+    pros::delay(1000);
+    align();
+    chassis.setPose(0, -5.5, chassis.getPose().theta);
+    chassis.moveToPoint(0, 0, 1000, {.forwards = false, .maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 2});
+    chassis.turnToHeading(-55, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 5});
+    chassis.moveToPoint(-18, 16, 1500, {.maxSpeed = 80, .minSpeed = 2, .earlyExitRange = 2});
+    chassis.moveToPoint(-21.5, 18.5, 1500, { .maxSpeed = 50, .earlyExitRange = 0.5});
+    pros::delay(100);
+    intakes(0, 0, 0);
+    // second mid balls
     
-    // chassis.turnToHeading(-135, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 5});
-    // chassis.moveToPoint(-10, 32, 1500, {.forwards = false, .maxSpeed = 50});
-    // pros::delay(650);
-    // intakes(-30, -120, -120);
-    // pros::delay(150);
-    // intakes(60, 60, -40);
-    // pros::delay(2000);
-    // intakes(40, 40, -30);
-    // pros::delay(1000);
-    // intakes(127, 127, 127);
-    // // top mid goal scoring
+    chassis.turnToHeading(-135, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 5});
+    chassis.moveToPoint(-8.5, 33.5, 1500, {.forwards = false, .maxSpeed = 50});
+    pros::delay(650);
+    intakes(-30, -120, -120);
+    pros::delay(150);
+    intakes(60, 60, -40);
+    pros::delay(2000);
+    intakes(40, 40, -30);
+    pros::delay(1000);
+    intakes(127, 127, 127);
+    // top mid goal scoring
 
-    // chassis.moveToPoint(-46, -6, 1500, {.maxSpeed = 80, .minSpeed = 4, .earlyExitRange = 0.5});
-    // matchLoader.extend();
-    // chassis.turnToHeading(-180, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
-    // chassis.moveToPoint(-48, -21, 1200, {.maxSpeed = 40});
-    // pros::delay(2300);
-    // // 3rd matchload
+    chassis.moveToPoint(-46, -6, 1500, {.maxSpeed = 80, .minSpeed = 4, .earlyExitRange = 0.5});
+    matchLoader.extend();
+    chassis.turnToHeading(-180, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
+    chassis.moveToPoint(-48, -21, 1200, {.maxSpeed = 40});
+    pros::delay(2300);
+    // 3rd matchload
 
-    // chassis.moveToPoint(-62, 10, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
-    // chassis.turnToHeading(-180, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
-    // chassis.moveToPoint(-62, 75, 3000, {.forwards = false, .maxSpeed = 110, .minSpeed = 110, .earlyExitRange = 3});
-    // matchLoader.retract();
-    // // arrive at other side
+    chassis.moveToPoint(-62, 10, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 2});
+    chassis.turnToHeading(-180, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
+    chassis.moveToPoint(-62, 75, 3000, {.forwards = false, .maxSpeed = 110, .minSpeed = 110, .earlyExitRange = 3});
+    matchLoader.retract();
+    // arrive at other side
     
-    // chassis.turnToHeading(-125, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 2});
-    // chassis.moveToPoint(-44, 85, 2000, {.forwards = false, .maxSpeed = 90, .earlyExitRange = 0.3});  
-    // chassis.turnToHeading(-10, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
-    // chassis.moveToPoint(-39, 60, 2000, {.forwards = false});
-    // pros::delay(500); 
-    // hood.extend();
-    // pros::delay(2000);
+    chassis.turnToHeading(-125, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 2});
+    chassis.moveToPoint(-44, 85, 2000, {.forwards = false, .maxSpeed = 90, .earlyExitRange = 0.3});  
+    chassis.turnToHeading(-10, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
+    chassis.moveToPoint(-39, 60, 2000, {.forwards = false});
+    pros::delay(500); 
+    hood.extend();
+    pros::delay(2000);
 
-    // // *-----------------------------*
-    // // 3RD RESET (TUNE UNTIL END)
+    // *-----------------------------*
+    // 3RD RESET (TUNE UNTIL END)
 
-    // chassis.setPose(-44, 60, chassis.getPose().theta);
-    // matchLoader.extend();
-    // // 3rd long goal scoring
+    chassis.setPose(-44, 60, chassis.getPose().theta);
+    matchLoader.extend();
+    // 3rd long goal scoring
 
-    // chassis.moveToPoint(-43.5, 80, 2000, {.maxSpeed = 60, .minSpeed = 4, .earlyExitRange = 3});
-    // chassis.moveToPoint(-43.5, 92, 3000, {.maxSpeed = 40});
-    // hood.retract();
-    // pros::delay(2000);
-    // // 4th matchloading
+    chassis.moveToPoint(-43.5, 80, 2000, {.maxSpeed = 60, .minSpeed = 4, .earlyExitRange = 3});
+    chassis.moveToPoint(-43.5, 92, 3000, {.maxSpeed = 40});
+    hood.retract();
+    pros::delay(2000);
+    // 4th matchloading
 
-    // chassis.moveToPoint(-44, 58, 1500, {.forwards = false, .maxSpeed = 70});
-    // pros::delay(800);
-    // hood.extend();
-    // pros::delay(2000);
-    // // 4th long goal scoring
+    chassis.moveToPoint(-44, 58, 1500, {.forwards = false, .maxSpeed = 70});
+    pros::delay(800);
+    hood.extend();
+    pros::delay(2000);
+    // 4th long goal scoring
 
-    // chassis.turnToHeading(70, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 5});
-    // matchLoader.retract();
-    // chassis.moveToPoint(0, 74, 1500, {.maxSpeed = 80, .minSpeed = 2, .earlyExitRange = 3});
-    // chassis.turnToHeading(8, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
-    // chassis.moveToPoint(0, 100, 1500, {.maxSpeed = 80});
-    // // park
+    // chassis.swingToPoint(-20, 96, lemlib::DriveSide::RIGHT, 1500, {.maxSpeed = 100, .minSpeed = 10, .earlyExitRange = 1});
+    chassis.turnToHeading(70, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 5});
+    matchLoader.retract();
+    chassis.moveToPoint(0, 74, 1500, {.maxSpeed = 80, .minSpeed = 2, .earlyExitRange = 3});
+    chassis.turnToHeading(8, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
+    chassis.moveToPoint(0, 92, 1500, {.maxSpeed = 80});
+    pros::delay(1000);
+    chassis.moveToPoint(0, 96, 1500, {.minSpeed = 100});
+    pros::delay(600);
+    chassis.cancelMotion();
+    parkClear(2);
+    // park
+
+}
+
+void autonTaskFunc(void*) {
+    skillsAuton2();
 }
 
 void skillsAuton() {
@@ -598,78 +642,45 @@ void soloAWP() {
 
 void leftAuton() {
     chassis.setPose(0, 0, 0);
-    intake.move(-127);
-    toptakes(-127, 0);
-    chassis.moveToPoint(-8.5, 23, 2000, {.maxSpeed = 40});
-    pros::delay(1400);
-    matchLoader.extend();
-    chassis.moveToPoint(-6.5, 19, 800);
-    chassis.turnToHeading(-135, 1000);
-    matchLoader.retract();
-    intake.move(0);
-    chassis.moveToPoint(2, 24.5, 1500, {.forwards = false});
-    pros::delay(500);
-    intake.move(-80);
-    toptakes(-127, -114);
-    pros::delay(2000);
-    intake.move(0);
-    toptakes(0, 0);
-    chassis.moveToPoint(-26.5, 0, 1500);
+    intakes(127, 127, 127);
+    chassis.turnToHeading(-20, 300, {.maxSpeed=80, .minSpeed = 4});
+    chassis.moveToPoint(-9, 21.5, 1500, {.maxSpeed = 100, .minSpeed = 4});
+    chassis.turnToHeading(-135, 1000, {.maxSpeed = 70, .minSpeed = 2});
     pros::delay(100);
-    chassis.turnToPoint(-26.5, -15, 1000);
     matchLoader.extend();
-    intake.move(-127);
-    toptakes(-60, 0);
-    chassis.moveToPoint(-26.5, -8, 1000, {.maxSpeed = 50});
-    chassis.waitUntilDone();
-    chassis.moveToPoint(-26.5 , -15.5, 4000, {.maxSpeed = 20, .minSpeed = 20});
-    pros::delay(1700);
-    chassis.moveToPoint(-27.5, 11, 2000, {.forwards = false, .maxSpeed = 100});
-    toptakes(0, 0);
-    pros::delay(500);
-    toptakes(127,144);
-    pros::delay(1600);
-    matchLoader.retract();
-    intake.move(0);
-    toptakes(0,0);
-    chassis.moveToPoint(-27.5, 5, 800, {.minSpeed = 127});
-    pros::delay(500);
-    chassis.moveToPoint(-27.5, 10, 1000, {.forwards = false, .minSpeed = 127});
+    chassis.moveToPoint(-32.5, -3.5, 1500, {.maxSpeed = 100, .minSpeed = 4});
+    chassis.turnToHeading(180, 1000, {.maxSpeed = 70, .minSpeed = 2});
+    chassis.moveToPoint(-34.5, -18, 1000, {.maxSpeed = 80, .minSpeed = 4});
+    pros::delay(1000);
+    chassis.moveToPoint(-34.5, 11, 1500, {.forwards = false, .maxSpeed = 100, .minSpeed = 80});
+    pros::delay(700);
+    hood.extend();
+    pros::delay(2000);
+    chassis.moveToPoint(-25, 0, 2000, {.maxSpeed = 100, .minSpeed = 5});
+    chassis.moveToPoint(-25, 30,5000, {.forwards = false, .maxSpeed = 120, .minSpeed = 80});
 }
 
 void rightAuton() {
     chassis.setPose(0, 0, 0);
-    intake.move(-127);
-    chassis.moveToPose(6.5, 19, 20, 2000, {.maxSpeed = 100});
-    pros::delay(800);
+    intakes(127, 127, 127);
+    chassis.turnToHeading(20, 300, {.maxSpeed=80, .minSpeed = 4, .earlyExitRange = 2});
+    chassis.moveToPoint(10, 23.5, 1500, {.maxSpeed = 80, .minSpeed = 4, .earlyExitRange = 2});
+    pros::delay(400);
     matchLoader.extend();
-    chassis.moveToPoint(5.5, 17, 1000, {.forwards = false});
-    intake.move(0);
-    matchLoader.retract();
-    chassis.turnToHeading(-40, 1000);
-    chassis.moveToPoint(-3, 25.5, 2000);
-    pros::delay(1000);
-    intake.move(80);
-    pros::delay(800);
-    intake.move(0);
-    chassis.moveToPoint(26, 1, 2000, {.forwards = false});
-    chassis.turnToPoint(26, -15, 1000);
-    pros::delay(1000);
-    matchLoader.extend();
-    pros::delay(500);
-    intake.move(-127);
-    chassis.moveToPoint(26, -15, 1500, {.maxSpeed = 100});
-    pros::delay(1700);
-    chassis.moveToPoint(26, 17, 2000, {.forwards = false, .maxSpeed = 100});
-    pros::delay(800);
-    toptakes(127, 114);
-    pros::delay(2000);
-    toptakes(0, 0);
-    intake.move(0);
-    matchLoader.retract();
-    chassis.moveToPoint(26, 10, 800, {.minSpeed = 127});
-    pros::delay(500);
-    chassis.moveToPoint(26, 17, 1000, {.forwards = false, .minSpeed = 127});
+    chassis.turnToHeading(135, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
+    pros::delay(100);
+    chassis.moveToPoint(32.5, 1, 1500, {.maxSpeed = 80, .minSpeed = 4});
+    chassis.turnToHeading(180, 1000, {.maxSpeed = 70, .minSpeed = 2, .earlyExitRange = 3});
+    // chassis.moveToPoint(34.5, -18, 1000, {.maxSpeed = 80, .minSpeed = 4, .earlyExitRange = 2});
+    // pros::delay(1500);
+    chassis.moveToPoint(32.5, 11, 1500, {.forwards = false, .maxSpeed = 100, .minSpeed = 80, .earlyExitRange = 2});
+    pros::delay(900);
+    hood.extend();
+    pros::delay(1500);
+    chassis.turnToHeading(160, 1000, {.maxSpeed = 90, .minSpeed = 5, .earlyExitRange = 3});
+    chassis.moveToPoint(40.5, 0, 2000, {.maxSpeed = 100, .minSpeed = 5, .earlyExitRange = 2});
+    chassis.turnToHeading(160, 1000, {.maxSpeed = 70, .minSpeed = 4, .earlyExitRange = 3});
+    chassis.moveToPoint(40.5, 30, 5000, {.forwards = false, .maxSpeed = 120, .minSpeed = 80, .earlyExitRange = 5});
 }
 
 /**
@@ -679,9 +690,9 @@ void autonomous() {
     //robot starts with the back touching the front left corner of the parking space
     //robot starts facing forward, not at an angle
     // leftAuton();
-    // rightAuton();
+    rightAuton();
     // soloAWP();
-    skillsAuton2();
+    // skillsAuton2();
     // aleftMotors.move(50);
     // arightMotors.move(50);
     // pros::delay(100);
@@ -695,7 +706,8 @@ void autonomous() {
 void opcontrol() {
     // controller
     // loop to continuously update motors
-    skillsAuton2();
+    // rightAuton();
+    // autonTask = new pros::Task(autonTaskFunc);
     while (true) {
         // get joystick positions
         // int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
@@ -770,6 +782,10 @@ void opcontrol() {
                 pros::delay(200);
             }
         }
+
+        // if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+        //     stop();
+        // }
 
         // delay to save resources
         pros::delay(10);
